@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<script>
+/* コントロール表示判定: ページ最序盤(描画前)にタッチ端末を判定し html に touch クラスを付与。
+   PCでは付かないのでコントロールは一度も表示されず、チラつかない。スマホは複数シグナルで確実に検出。 */
+(function(){
+  try{
+    var t = (('ontouchstart' in window) || (navigator.maxTouchPoints>0) || (navigator.msMaxTouchPoints>0) ||
+             (window.matchMedia && window.matchMedia('(pointer:coarse)').matches));
+    if(t) document.documentElement.classList.add('touch');
+    // 念のため、最初のタッチが来たら必ず有効化(誤判定の保険)
+    window.addEventListener('touchstart', function once(){ document.documentElement.classList.add('touch'); window.removeEventListener('touchstart', once); }, {passive:true});
+  }catch(e){}
+})();
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6NLQCERB9"></script>
 <script>
@@ -123,10 +136,9 @@
   .dpad .arrows .ar{right:8px;top:50%;transform:translateY(-50%)}
   /* PC(マウス環境)ではタッチUIを非表示。タッチデバイスのみ表示 */
   .dpad,.firebtn,.actbtn{display:none}
-  @media (pointer:coarse){
-    body.playing .dpad{display:block}
-    body.playing .firebtn,body.playing .actbtn{display:flex}
-  }
+  /* タッチ端末(html.touch=head段階で判定)かつプレイ中のみ表示。早期判定でPCのチラつき無し */
+  html.touch body.playing .dpad{display:block}
+  html.touch body.playing .firebtn,html.touch body.playing .actbtn{display:flex}
 @keyframes psyblink{0%,100%{opacity:1}50%{opacity:.2}}
 #psyhud{animation:psyblink .7s steps(2,end) infinite}
 #psyhud.charging{animation:psyblink .15s steps(2,end) infinite}
@@ -1659,16 +1671,20 @@ document.getElementById('startbtn').addEventListener('click',startGame);
 // 親サイト(ブリーフィング)から開かれた初回は二度押し不要=自動スタート
 addEventListener('message',function(ev){
   if(ev.data==='autostart'||(ev.data&&ev.data.type==='autostart')){
-    const t=document.getElementById('title');
-    if(t && !t.classList.contains('hidden')) startGame();   // タイトル表示中のみ(RETRYには干渉しない)
+    const over=document.getElementById('over');
+    const onGameOver = over && !over.classList.contains('hidden');
+    if(!playing && !onGameOver) startGame();
   }
 });
-// 埋め込み(iframe)時はタイトル画面のチラ見えを防ぐ: 最初からタイトルを隠して黒画面で待機し、autostartで開始
+// 埋め込み(iframe)時はタイトルのチラ見えを防ぐため一旦隠してautostartを待つ。autostart未着なら1.5秒後に再表示。
 (function(){
   try{
     if(window.self!==window.top){
       var t=document.getElementById('title');
-      if(t) t.classList.add('hidden');
+      if(t){
+        t.classList.add('hidden');
+        setTimeout(function(){ if(!playing && t){ t.classList.remove('hidden'); } }, 1500);
+      }
     }
   }catch(e){}
 })();
