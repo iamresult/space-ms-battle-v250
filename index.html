@@ -1,0 +1,3306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPACE MS BATTLE 3D — 作戦指令書 / FIELD BRIEFING</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Major+Mono+Display&family=DotGothic16&display=swap');
+  :root{
+    --bg:#07060d;--panel:#0e0c1a;--ink:#e8ecff;
+    --cyan:#19e6ff;--mag:#ff2bd6;--yel:#ffe11a;--grn:#22ee66;
+    --red:#ff2d55;--orange:#ff7a18;--purple:#a25bff;
+    --brown:#b5731f;
+    --grid:rgba(120,140,255,.10);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'DotGothic16',monospace;line-height:1.7;overflow-x:hidden;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:38px 38px;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);mix-blend-mode:multiply;}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
+    background:radial-gradient(120% 80% at 50% 30%,transparent 55%,rgba(0,0,0,.55) 100%);}
+  .wrap{max-width:1040px;margin:0 auto;padding:24px 18px 90px}
+  .mono{font-family:'Major Mono Display','DotGothic16',monospace}
+  .pix{font-family:'Press Start 2P',monospace}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    border:2px solid var(--cyan);background:rgba(25,230,255,.06);padding:8px 12px;
+    font-size:.62rem;letter-spacing:1px;color:var(--cyan);margin-bottom:22px;flex-wrap:wrap;}
+  .topbar .pix{font-size:.5rem}
+  .blink{animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{50%{opacity:.15}}
+  .hero{position:relative;border:3px solid var(--mag);text-align:center;
+    background:linear-gradient(180deg,rgba(255,43,214,.10),rgba(25,230,255,.05));
+    padding:30px 22px 26px;margin-bottom:14px;overflow:hidden;}
+  .hero .corner{position:absolute;width:20px;height:20px;border:3px solid var(--yel)}
+  .hero .c1{top:8px;left:8px;border-right:0;border-bottom:0}
+  .hero .c2{top:8px;right:8px;border-left:0;border-bottom:0}
+  .hero .c3{bottom:8px;left:8px;border-right:0;border-top:0}
+  .hero .c4{bottom:8px;right:8px;border-left:0;border-top:0}
+  .eyebrow{color:var(--yel);font-size:.6rem;letter-spacing:3px;margin:0 0 14px;}
+  .eyebrow .pix{font-size:.55rem}
+  h1.title{font-family:'Press Start 2P',monospace;margin:0;line-height:1.25;
+    font-size:clamp(1.5rem,7vw,3.4rem);
+    text-shadow:4px 0 var(--cyan),-4px 0 var(--mag),0 0 18px rgba(255,225,26,.4);color:#fff;}
+  .subtitle{margin:16px 0 0;color:var(--cyan);font-size:clamp(.7rem,2.6vw,1rem);letter-spacing:2px;}
+  .classified{display:inline-block;margin-top:18px;border:2px solid var(--red);color:var(--red);
+    padding:5px 12px;font-size:.6rem;letter-spacing:3px;transform:rotate(-2deg);
+    background:rgba(255,45,85,.08);font-family:'Press Start 2P',monospace;}
+  .hpstrip{display:flex;gap:3px;margin-top:20px;flex-wrap:wrap}
+  .hpstrip i{display:block;width:9px;height:18px;background:var(--grn);box-shadow:0 0 6px rgba(34,238,102,.6)}
+  .hpstrip i:nth-child(n+34){background:#2a3340;box-shadow:none}
+  section{margin-top:40px}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .sec-no{font-family:'Press Start 2P',monospace;font-size:.85rem;color:var(--bg);
+    background:var(--yel);padding:8px 10px;box-shadow:3px 3px 0 var(--mag);}
+  .sec-title{font-family:'Press Start 2P',monospace;font-size:clamp(.8rem,3.2vw,1.15rem);
+    color:var(--cyan);letter-spacing:1px;margin:0;}
+  .sec-sub{color:var(--purple);font-size:.62rem;letter-spacing:2px;margin:2px 0 0}
+  .panel{border:2px solid #2c2f55;background:var(--panel);padding:18px 18px;position:relative;}
+  .panel.mag{border-color:var(--mag)}.panel.yel{border-color:var(--yel)}
+  p{margin:0 0 12px}.lead{font-size:1.02rem}.dim{color:#9aa3d8}
+  b.cyan{color:var(--cyan)}b.mag{color:var(--mag)}b.yel{color:var(--yel)}
+  b.grn{color:var(--grn)}b.red{color:var(--red)}b.org{color:var(--orange)}
+  .story p{font-size:1rem}
+  .story .drop::first-letter{font-family:'Press Start 2P',monospace;color:var(--mag);
+    font-size:2.4rem;float:left;line-height:.8;margin:6px 10px 0 0;}
+  .ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .ctrl{border:2px solid #333a6a;padding:14px;background:rgba(255,255,255,.02);
+    display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .key{font-family:'Press Start 2P',monospace;font-size:.85rem;border:2px solid currentColor;
+    border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 12px currentColor;}
+  .key.fire{color:var(--yel)}.key.sbr{color:var(--mag)}.key.shld{color:var(--cyan)}
+  .key.move{color:var(--cyan);border-radius:8px}
+  .ctrl .kname{font-family:'Press Start 2P',monospace;font-size:.6rem;color:#fff;letter-spacing:1px}
+  .ctrl .kdesc{font-size:.86rem;color:#b9c0ee}
+  .foe{border:2px solid #333a6a;padding:14px 14px;margin-bottom:10px;
+    display:grid;grid-template-columns:14px 86px 1fr auto;gap:14px;align-items:center;
+    background:rgba(255,255,255,.02);}
+  .foe .bar{width:14px;height:100%;min-height:46px;border-radius:2px}
+  .foe h4{margin:0 0 4px;font-family:'Press Start 2P',monospace;font-size:.72rem}
+  .foe p{margin:0;font-size:.86rem;color:#b9c0ee}
+  .foe .pts{font-family:'Press Start 2P',monospace;font-size:.7rem;color:var(--yel);
+    text-align:right;white-space:nowrap;}
+  .foe .pts small{display:block;color:#8089bb;font-size:.5rem;margin-top:4px}
+  .tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .tip{border-left:4px solid var(--grn);padding:12px 14px;background:rgba(34,238,102,.05)}
+  .tip h4{margin:0 0 6px;color:var(--grn);font-size:.78rem;font-family:'Press Start 2P',monospace}
+  .tip p{margin:0;font-size:.9rem;color:#c4caf0}
+  .tip.warn{border-left-color:var(--red);background:rgba(255,45,85,.06)}
+  .tip.warn h4{color:var(--red)}
+  .tip.cyan{border-left-color:var(--cyan);background:rgba(25,230,255,.05)}
+  .tip.cyan h4{color:var(--cyan)}
+  .diff-rows{display:flex;flex-direction:column;gap:8px}
+  .drow{display:flex;align-items:center;gap:12px;font-size:.86rem}
+  .drow .wv{font-family:'Press Start 2P',monospace;font-size:.62rem;color:var(--yel);min-width:74px}
+  .meter{flex:1;height:14px;background:#1a1f33;border:1px solid #333a6a;position:relative;overflow:hidden}
+  .meter span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--grn),var(--yel),var(--red))}
+  .cta-wrap{margin-top:44px;text-align:center;border:3px dashed var(--cyan);padding:28px 18px;background:rgba(25,230,255,.04)}
+  .cta-wrap h3{font-family:'Press Start 2P',monospace;color:#fff;font-size:clamp(.9rem,3.5vw,1.4rem);
+    margin:0 0 8px;text-shadow:3px 0 var(--mag),-3px 0 var(--cyan)}
+  .cta-wrap p{color:var(--cyan);font-size:.7rem;letter-spacing:2px}
+  .startbtn{display:inline-block;margin-top:16px;font-family:'Press Start 2P',monospace;font-size:1rem;
+    color:var(--bg);background:var(--yel);padding:16px 30px;border:0;cursor:pointer;text-decoration:none;
+    box-shadow:5px 5px 0 var(--mag);transition:transform .08s, box-shadow .08s;}
+  .startbtn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--mag)}
+  .startbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--mag)}
+  footer{margin-top:40px;text-align:center;color:#5b628f;font-size:.56rem;letter-spacing:2px;line-height:2}
+  footer .pix{font-size:.5rem;color:var(--purple)}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+
+  #gameOverlay{position:fixed;inset:0;z-index:100000;background:#000;display:none}
+  #gameOverlay.on{display:block}
+  #gameOverlay iframe{width:100%;height:100%;border:0;display:block}
+  #gameClose{position:fixed;top:10px;right:10px;z-index:100001;
+    font-family:'Press Start 2P',monospace;font-size:.6rem;color:#fff;
+    background:rgba(255,45,85,.85);border:2px solid #fff;padding:8px 12px;cursor:pointer}
+
+  /* PSY 折りたたみ: 見出しごと隠し、折り目の線だけ見せる(気づいた人だけ触る) */
+  .psy-fold{position:relative;-webkit-user-select:none;user-select:none;cursor:pointer}
+  .psy-fold > .psy-hidden{display:none}
+  .psy-fold.open > .psy-hidden{display:block;animation:psyDrop .5s ease}
+  .psy-fold.open > .psy-crease{display:none}
+  @keyframes psyDrop{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+  /* 折り目: 明るいシアンのギザギザ(ジグザグ)。主線+薄い折り返しで紙を折った跡に見せる */
+  .psy-crease{position:relative;height:26px;margin:12px 0 8px;cursor:default}
+  .psy-crease::before{content:"";position:absolute;left:1%;right:1%;top:24%;height:14px;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='14'%3E%3Cpath%20d='M0%2010%20L7%204%20L14%2010%20L21%204%20L28%2010'%20fill='none'%20stroke='%237fe9ff'%20stroke-width='1.8'/%3E%3C/svg%3E");background-repeat:repeat-x;background-position:center;
+    transform:rotate(-1.1deg);opacity:.8;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
+  .psy-crease::after{content:"";position:absolute;left:6%;right:0;top:60%;height:14px;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='28'%20height='14'%3E%3Cpath%20d='M0%2010%20L7%204%20L14%2010%20L21%204%20L28%2010'%20fill='none'%20stroke='%237fe9ff'%20stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:repeat-x;background-position:center;
+    transform:rotate(-1.1deg);opacity:.45}
+  
+  /* ボクセル静止画 */
+  canvas.vox-foe{width:100%;height:80px;display:block}
+  .vox-psy-row{display:flex;gap:24px;justify-content:center;margin:10px auto 16px}
+  .vox-psy{width:140px;height:140px;display:block}
+
+</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span class="pix">◢ E.D.F. ORBITAL COMMAND ◣</span>
+    <span>FILE: SMB-3D / VOXEL COMBAT</span>
+    <span class="blink">● REC TRANSMITTING</span>
+  </div>
+
+  <div class="hero">
+    <span class="corner c1"></span><span class="corner c2"></span>
+    <span class="corner c3"></span><span class="corner c4"></span>
+    <p class="eyebrow"><span class="pix">CLASSIFIED // FIELD BRIEFING</span> — 作戦指令書 No.2026</p>
+    <h1 class="title">SPACE MS<br>BATTLE 3D</h1>
+    <p class="subtitle mono">VER 2.5.0 — VOXEL COMBAT PROTOCOL</p>
+    <div><span class="classified">TOP SECRET</span></div>
+    <div style="margin-top:20px;text-align:center">
+      <a class="startbtn" href="SPACE_MS_BATTLE_3D_v250.html">▶ START MISSION</a>
+    </div>
+    <div class="hpstrip" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+  </div>
+  <p class="dim" style="font-size:.62rem;letter-spacing:2px;margin-bottom:8px">
+    ▼ 本書は単独機パイロット向けの実戦マニュアルである。離脱を許可しない。
+  </p>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">01</span>
+      <div><h2 class="sec-title">SITUATION</h2><p class="sec-sub">状況 — なぜ君が出撃するのか</p></div>
+    </div>
+    <div class="panel mag story">
+      <p class="drop lead">宙域<b class="cyan">セクター7</b>が陥落した。敵メタルストライカー軍団と巡航戦艦の大編隊が、最終防衛ラインを越えて押し寄せている。我が軍の艦隊は壊滅。残る稼働機は——<b class="yel">君の1機のみ</b>。</p>
+      <p>君の機体は試作型<b class="mag">ボクセル・ガンナー</b>。右腕にビームライフル、両手にビームサーベル、前面にシールドを備える。弾薬は無限。だが<b class="red">被弾は即、死に近い</b>。HPゲージが尽きればミッションは終わる。</p>
+      <p class="dim">敵は波状攻撃（<b class="cyan">WAVE</b>）で押し寄せる。1つの波を殲滅すれば次が来る。波を重ねるごとに敵は<b class="org">数を増し、速くなり、硬くなり、激しく撃ってくる</b>。退路はない。撃て。斬れ。生き延びろ。そして——スコアを刻め。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">02</span>
+      <div><h2 class="sec-title">CONTROLS</h2><p class="sec-sub">操作 — 機体制御プロトコル</p></div>
+    </div>
+    <div class="ctrl-grid">
+      <div class="ctrl"><div class="key move"><svg viewBox="0 0 24 24" width="64%" height="64%" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><polyline points="8.5,6.5 12,3 15.5,6.5"/><polyline points="8.5,17.5 12,21 15.5,17.5"/><polyline points="6.5,8.5 3,12 6.5,15.5"/><polyline points="17.5,8.5 21,12 17.5,15.5"/></svg></div><div class="kname">D-PAD <span style="font-family:'DotGothic16',sans-serif;letter-spacing:1px">←↑↓→</span></div><div class="kdesc">方向パッド（PCは<b class="cyan">矢印キー</b>）で照準（自機）を上下左右へ。動きは速く、離せばピタッと止まる——その<b class="cyan">制動性能は敵メタルストライカーを上回る</b>。</div></div>
+      <div class="ctrl"><div class="key fire">X</div><div class="kname">FIRE</div><div class="kdesc">ビームライフル発射。遠距離の敵・戦艦のコアを撃ち抜く主力。敵弾も撃ち落とせる。</div></div>
+      <div class="ctrl"><div class="key sbr">Z</div><div class="kname">SABER L</div><div class="kdesc">左ビームサーベル。接近戦で振る。敵の斬撃を受け流す。</div></div>
+      <div class="ctrl"><div class="key sbr">C</div><div class="kname">SABER R</div><div class="kdesc">右ビームサーベル。左右を撃ち分けて連撃をさばく。タイミングが命。</div></div>
+      <div class="ctrl"><div class="key shld">S</div><div class="kname">SHIELD</div><div class="kdesc">前面シールド展開。敵の剣撃を防ぐが、耐久を使い切ると割れる。</div></div>
+    </div>
+    <p class="dim" style="font-size:.78rem;margin-top:10px">※ PCではキーボード（矢印キー / X / Z / C / S）でも操作可能。スマホは画面下の専用ボタン。</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">03</span>
+      <div><h2 class="sec-title">ENEMY INTEL</h2><p class="sec-sub">敵性体データ — 識別と撃破評価</p></div>
+    </div>
+    <div class="foe"><span class="bar" style="background:var(--grn)"></span>
+      <canvas class="vox-foe" data-model="grunt"></canvas>
+      <div><h4 style="color:var(--grn)">GRUNT MS / 緑メタルストライカー</h4><p>主力の量産機。接近してビームサーベルで斬りかかってくる。数で押してくる基本敵。</p></div>
+      <div class="pts">100 PTS</div></div>
+    <div class="foe"><span class="bar" style="background:var(--brown)"></span>
+      <canvas class="vox-foe" data-model="heavy"></canvas>
+      <div><h4 style="color:var(--brown)">HEAVY MS / 茶メタルストライカー</h4><p>4面以降に出現する重装甲型（緑3体に1体）。<b style="color:var(--brown)">耐久性が極めて高く、接近戦が得意</b>。その<b class="red">剣撃は重い</b>。<b class="cyan">距離を取ってビームで処理</b>するのが定石だ。</p></div>
+      <div class="pts">200 PTS<small>重装甲</small></div></div>
+    <div class="foe"><span class="bar" style="background:var(--cyan)"></span>
+      <canvas class="vox-foe" data-model="fighter"></canvas>
+      <div><h4 style="color:var(--cyan)">FIGHTER / 戦闘機</h4><p>高速で軌道を散らして突っ込む小型機。脆く一撃で落ちるが、動きが読みにくい。撃墜ボーナス低め。</p></div>
+      <div class="pts">80 PTS</div></div>
+    <div class="foe"><span class="bar" style="background:var(--purple)"></span>
+      <canvas class="vox-foe" data-model="ship"></canvas>
+      <div><h4 style="color:var(--purple)">BATTLESHIP / 巡航戦艦</h4><p>2面から偶数WAVEで出現（高面で2〜3隻）。弱点<b class="mag">コア</b>は艦の左・中央・右いずれか1か所。<b class="yel">コアのある前面1/3ブロック</b>を狙え。近接は当てやすく、遠距離はコアを正確に。</p></div>
+      <div class="pts">2000 PTS</div></div>
+    <div class="foe" style="border-color:var(--mag)"><span class="bar" style="background:var(--mag)"></span>
+      <canvas class="vox-foe" data-model="nemesis"></canvas>
+      <div><h4 style="color:var(--mag)">NEMESIS / 漆黒の宿敵</h4><p>ごく稀に投入される<b class="mag">特務専用重装機</b>。漆黒の装甲に<b class="mag">マゼンタの輝き</b>。<b class="cyan">高機動（通常機の約3倍）</b>・<b class="red">重装甲（剣撃を半減）</b>・<b class="yel">高火力の剣撃</b>を兼備した特務専用機。激しい弾幕と執拗な接近戦を仕掛ける。出現警告が出たら最大限の警戒を。撃破報酬は破格。</p></div>
+      <div class="pts">3000 PTS<small>特務専用重装機</small></div></div>
+    <p class="dim" style="font-size:.78rem;margin-top:8px">敵弾を<b class="yel">ビームで撃ち落とす</b>と +10 PTS。画面外の敵は<b class="cyan">方向矢印</b>が指し示す。</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">04</span>
+      <div><h2 class="sec-title">TACTICS</h2><p class="sec-sub">戦術 — 生存のためのコツ</p></div>
+    </div>
+    <div class="tips">
+      <div class="tip cyan"><h4>狙い分け</h4><p>照準に一番近い敵が攻撃対象。戦艦を狙うときは、手前のMSをかわしつつコアを画面中央へ捉える。</p></div>
+      <div class="tip"><h4>コアを読む</h4><p>戦艦の赤く光るコアは左・中央・右に出る。その<b class="grn">1/3ブロック</b>を狙えば命中。HIT!表示が出れば成功。</p></div>
+      <div class="tip cyan"><h4>近接戦闘</h4><p>MSが接近したら左右サーベル（Z/C）で受ける。タイミングが合えばCLASHで弾き返す。ズレるとTRADE（相討ち）。</p></div>
+      <div class="tip warn"><h4>茶は斬るな</h4><p>茶ヘビーは耐久性が高く接近戦が得意。剣撃は重い。距離を取って<b class="cyan">ビーム</b>で処理するのが安全。</p></div>
+      <div class="tip"><h4>補給を逃すな</h4><p><b class="grn">2000点</b>ごとに<b class="red">赤十字</b>の補給ボックスが奥から流れてくる。<b class="cyan">撃つ・斬る・接触</b>のいずれかで取得でき、HPが<b class="grn">全回復</b>する。軌道に自機を寄せて確実に取れ——この補給線の確保こそ、長い戦いを制す<b class="yel">攻略の鍵</b>だ。</p></div>
+      <div class="tip warn"><h4>シールド温存</h4><p>シールド（S）は割れると無防備。剣撃が来る瞬間だけ展開し、撃ち合いでは温存する。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-no">05</span>
+      <div><h2 class="sec-title">CLOSE COMBAT</h2><p class="sec-sub">近接戦闘モード — 斬り合いの掟</p></div>
+    </div>
+    <div class="panel mag">
+      <p class="lead">敵メタルストライカーが接近すると、<b class="mag">近接戦闘モード</b>に突入する。互いにビームサーベルで斬り結ぶ一騎打ちだ。鍵は<b class="cyan">主導権（イニシアチブ）</b>の奪取——<b class="red">受け方を誤れば即、深手を負う</b>。
+      <div class="tips" style="margin-top:14px">
+        <div class="tip warn"><h4>ビームライフル封印</h4><p>近接戦闘中は自機の<b class="red">ビームライフル（X）は使用不可</b>。撃って距離を取ることはできない。左右のサーベル（<b class="mag">Z</b>/<b class="mag">C</b>）で受け、捌くしかない。</p></div>
+        <div class="tip cyan"><h4>来る側を読む</h4><p>敵は左右どちらかの剣で斬りかかってくる。斬撃が来る側を見極めろ。それが防御の起点だ。</p></div>
+        <div class="tip"><h4>NO HIT（受け＝完全防御）</h4><p>斬撃が来る側と<b class="grn">同じ側のサーベル</b>（左=<b class="mag">Z</b> / 右=<b class="mag">C</b>）で受ければ鍔迫り合い＝<b class="cyan">完全防御</b>。弾かれた<b class="red">攻め手は体勢を崩して硬直</b>し、受けきった側は無傷で<b class="cyan">主導権を握る</b>。生じた隙に即座に反撃を叩き込め。</p></div>
+        <div class="tip cyan"><h4>連続斬撃（左右独立）</h4><p>左右のサーベルは独立制御。片方を振り抜く最中でも逆の刃を繰り出せる。左右を交互に畳みかければ<b class="grn">手数で圧倒</b>できる。</p></div>
+        <div class="tip"><h4>後の先（後出しの迎撃）</h4><p>敵が先に振りかぶっても、斬撃が着弾する刹那までに正しい側で受ければ<b class="cyan">NO HITは成立</b>する。サーベルの初動が速く、<b class="mag">後の先</b>での迎撃が利く。</p></div>
+        <div class="tip warn"><h4>GUARDED（敵の防御）</h4><p>敵もまた受ける。<b class="red">むやみな連打は読まれて弾かれ</b>、逆にこちらが体勢を崩す。闇雲に畳みかけるな——隙を見極め、確実な一刀を斬り込め。</p></div>
+        <div class="tip warn"><h4>TRADE（相討ち）</h4><p>受ける側を<b class="red">間違える</b>と相討ち。敵にもダメージは入るが、<b class="red">自機も深く斬られる</b>。連続で誤れば一気に瀕死だ。</p></div>
+        <div class="tip warn"><h4>茶ヘビーに注意</h4><p>茶メタルストライカーは耐久性が極めて高く接近戦が得意。剣撃も重い。近接は避け、<b class="cyan">ビーム</b>で削るのが安全だ。</p></div>
+        <div class="tip cyan"><h4>シールドで凌ぐ</h4><p>受けに自信がなければ<b class="cyan">S</b>でシールド展開。剣撃を防げるが、耐久を使い切ると<b class="red">割れて無防備</b>になる。</p></div>
+        <div class="tip"><h4>宿敵は別格</h4><p>ネメシスは斬りが<b class="mag">速く執拗</b>。受けの猶予が短い。落ち着いて来る側を見極め、確実にNO HITを取れ。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="psy-fold" onclick="this.classList.toggle('open')">
+      <div class="psy-crease"></div>
+      <div class="psy-hidden">
+      <div class="sec-head">
+      <span class="sec-no">06</span>
+      <div><h2 class="sec-title">PSY</h2><p class="sec-sub">特殊兵装 — 極秘機密兵器</p></div>
+      </div>
+      <div class="vox-psy-row"><canvas class="vox-psy" data-model="psy"></canvas><canvas class="vox-psy" data-model="psy"></canvas></div>
+      <div class="panel mag">
+      <p style="font-family:'Press Start 2P',monospace;font-size:.62rem;color:var(--red);letter-spacing:1px;border:2px solid var(--red);padding:8px 10px;margin-bottom:14px">⚠ TOP SECRET / 取扱注意 — 本兵装の存在は機密指定。記録・口外を禁ず。</p>
+      <p class="lead">PSYシステム<b class="mag">「PSY」</b>は、E.D.F.が極秘裏に開発した試作機密兵器である。パイロットの脳波を増幅し、無人の誘導端末を介して<b class="yel">宙域内の全敵性目標を殲滅する圧倒的火力</b>を解き放つ。<b class="yel">敵機をすべて一掃</b>し、戦域を完全制圧する。実戦投入は本作戦が初——<b class="red">データは存在しない。生きて持ち帰れ。</b></p>
+      <p class="dim" style="font-size:.84rem;margin:10px 0 4px">補給で<b class="grn">HPが満タン</b>のときにさらに補給を確保すると、余剰エネルギーがPSYとして蓄積される。切り札として温存し、戦局を決する場面で解き放て。</p>
+      <div class="tips" style="margin-top:14px">
+        <div class="tip"><h4>PSYの獲得</h4><p><b class="grn">HP満タン</b>の状態で補給（赤十字）を取ると、余剰がPSYに変換され<b class="mag">+1</b>。被弾してHPが減っていると<b class="grn">HP・シールドが全回復</b>し、PSYは付かない。画面右上に<b class="red">赤いPSY</b>が点滅で表示。</p></div>
+        <div class="tip cyan"><h4>最大ストック</h4><p>PSYは最大<b class="cyan">3つ</b>までストックできる。連続で満タン補給を取れば、その分だけ蓄積される。</p></div>
+        <div class="tip warn"><h4>発動方法</h4><p>PSYがあるとき、<b class="yel">左右サーベル（Z＋C／SBR L＋SBR R）を2秒同時押し</b>。確定フェーズに入ると敵弾は消え、敵は停止、自機は<b class="cyan">無敵</b>になる。</p></div>
+        <div class="tip"><h4>PSY斉射</h4><p>左右に<b class="mag">PSYユニット2機</b>が出現し、各機から<b class="yel">黄色いレーザー</b>が画面内の敵へ一斉ロックオン射撃。当たった敵は瞬時に爆発する。</p></div>
+        <div class="tip cyan"><h4>WAVE強制クリア</h4><p>この一撃で画面内の敵を全滅。得点は加算され、<b class="grn">WAVEも無条件でクリア</b>になる。PSYを1つ消費する。</p></div>
+        <div class="tip warn"><h4>運用の注意</h4><p>殲滅で<b class="grn">2000点</b>以上を一気に稼いでも、その後に出る補給は<b class="red">1つだけ</b>。たとえ<b class="red">4000点以上</b>を同時獲得しても複数は支給されないので注意。ここぞの場面で解き放て。</p></div>
+      </div>
+    </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-wrap">
+    <p class="mono" style="color:var(--yel);letter-spacing:3px;margin-bottom:6px">▶ ORDERS</p>
+    <h3>出撃せよ、パイロット</h3>
+    <p>生還の保証はない。スコアだけが、君がそこにいた証だ。</p>
+    <a class="startbtn" href="SPACE_MS_BATTLE_3D_v250.html">▶ START MISSION</a>
+    <p class="dim" style="margin-top:16px;letter-spacing:1px;color:#6b73a8">※ 同フォルダの SPACE_MS_BATTLE_3D.html を起動する</p>
+  </div>
+
+  <footer>
+    <div class="pix">SPACE MS BATTLE 3D</div>
+    E.D.F. ORBITAL COMMAND // VOXEL COMBAT DIVISION<br>
+    UNAUTHORIZED RETREAT IS PROHIBITED — GOOD LUCK, PILOT
+  </footer>
+</div>
+
+<div id="gameOverlay">
+  <button id="gameClose" onclick="closeGame()">X CLOSE</button>
+  <iframe id="gameFrame" title="SPACE MS BATTLE 3D" allow="autoplay; fullscreen" srcdoc="<!DOCTYPE html>
+<html lang=&quot;ja&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover&quot;>
+<title>SPACE MS BATTLE 3D Ver.2.0</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=DotGothic16&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;width:100%;overflow:hidden;background:#04050a;font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;
+    touch-action:none;-webkit-user-select:none;user-select:none;
+    position:fixed;inset:0;overscroll-behavior:none;-webkit-overflow-scrolling:none}
+  #app{position:fixed;inset:0;background:#000}
+  canvas{display:block}
+  /* HUD */
+  .hud{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;overflow:hidden}
+  .reticle{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:60px}
+  .reticle::before,.reticle::after{content:&quot;&quot;;position:absolute;background:rgba(52,208,255,.8)}
+  .reticle::before{left:50%;top:0;width:2px;height:18px;transform:translateX(-50%)}
+  .reticle::after{left:50%;bottom:0;width:2px;height:18px;transform:translateX(-50%)}
+  .reticle span::before,.reticle span::after{content:&quot;&quot;;position:absolute;background:rgba(52,208,255,.8);top:50%}
+  .reticle span::before{left:0;width:18px;height:2px;transform:translateY(-50%)}
+  .reticle span::after{right:0;width:18px;height:2px;transform:translateY(-50%)}
+  .reticle.lock::before,.reticle.lock::after,.reticle.lock span::before,.reticle.lock span::after{background:rgba(255,45,85,.95)}
+  .rbox{position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);border:2px solid transparent}
+  .rbox.lock{border-color:rgba(255,45,85,.9)}
+  .corner{position:absolute;width:32px;height:32px;border:2px solid rgba(52,208,255,.4)}
+  .c1{top:20px;left:20px;border-right:none;border-bottom:none}
+  .c2{top:20px;right:20px;border-left:none;border-bottom:none}
+  .c3{bottom:20px;left:20px;border-right:none;border-top:none}
+  .c4{bottom:20px;right:20px;border-left:none;border-top:none}
+  .topbar{position:absolute;top:24px;left:0;right:0;text-align:center;color:#34d0ff;letter-spacing:.2em;font-size:.8rem}
+  .topbar .score{color:#ffd60a;font-size:.7rem;font-weight:bold}
+  .hpwrap{position:absolute;bottom:28px;left:24px;display:flex;align-items:center;gap:8px}
+  .hpwrap .lbl{color:#34d0ff;font-size:.5rem;letter-spacing:.1em}
+  .hpbar{display:flex;gap:1.5px;flex-wrap:wrap;max-width:280px}
+  .hpbar i{width:4px;height:12px;background:#22ee66;display:block;box-shadow:0 0 4px rgba(34,238,102,.6)}
+  .hpbar i.lowhpseg{background:#ff2d2d;box-shadow:0 0 5px rgba(255,45,45,.8)}
+  .hpbar i.off{background:#2a3340;box-shadow:none}
+  /* シールド構え中のオーバーレイ(2D版踏襲: 赤枠+SHIELD+12セグメント) */
+  .shieldoverlay{position:absolute;inset:0;display:none;pointer-events:none;z-index:14;
+    border:6px solid rgba(255,40,40,.85);box-shadow:inset 0 0 0 8px rgba(170,0,0,.5)}
+  .shieldoverlay.on{display:block}
+  .shieldlabel{position:absolute;top:42%;left:0;right:0;text-align:center;color:#34d0ff;
+    font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-size:.7rem;letter-spacing:.2em;
+    text-shadow:0 0 8px rgba(52,208,255,.8)}
+  .shieldmeter{position:absolute;top:48%;left:0;right:0;display:flex;justify-content:center;gap:2px}
+  .shieldmeter i{width:6px;height:12px;background:#34d0ff;display:block;box-shadow:0 0 5px rgba(52,208,255,.7)}
+  .shieldmeter i.off{background:#552222;box-shadow:none}
+  .wave{position:absolute;bottom:28px;right:24px;color:#c061ff;font-size:.55rem;letter-spacing:.1em}
+  /* ダメージフラッシュ */
+  .dmg{position:fixed;inset:0;background:radial-gradient(circle,transparent 40%,rgba(255,0,40,.5));opacity:0;pointer-events:none;z-index:20}
+  @keyframes nmblink{0%,49%{opacity:1}50%,100%{opacity:0.25}}
+  .nmsel{animation:nmblink .9s steps(1) infinite}
+  .nmbtn{width:46px;height:40px;background:#1a2a3a;color:#34d0ff;border:1px solid #456;border-radius:8px;cursor:pointer;font-family:monospace;line-height:1}
+  .nmbtn:active{background:#2a4a6a}
+  .healfx{position:fixed;inset:0;background:radial-gradient(circle,rgba(40,255,120,.45),transparent 60%);opacity:0;pointer-events:none;z-index:20}
+  .lowhp{position:fixed;inset:0;box-shadow:inset 0 0 60px 20px rgba(255,0,0,.7);opacity:0;pointer-events:none;z-index:19}
+  /* 被斬エフェクト: 画面を斜めに斬り裂く */
+  .slashfx{position:fixed;inset:0;pointer-events:none;z-index:21;opacity:0;
+    background:linear-gradient(115deg,transparent 46%,rgba(255,255,255,.95) 49%,rgba(255,90,160,.9) 50%,transparent 54%)}
+  /* CLASHエフェクト: 中央で火花が散る白フラッシュ */
+  .clashfx{position:fixed;inset:0;pointer-events:none;z-index:21;opacity:0;
+    background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.95) 0%,rgba(52,208,255,.6) 8%,transparent 22%)}
+  /* 剣射程ロックオンマーク(点滅カギ括弧) */
+  .swlock{position:absolute;--c:#ffd60a}
+  .swlock .c{position:absolute;width:30%;height:30%;border:2px solid var(--c)}
+  .swlock .tl{left:0;top:0;border-right:none;border-bottom:none}
+  .swlock .tr{right:0;top:0;border-left:none;border-bottom:none}
+  .swlock .bl{left:0;bottom:0;border-right:none;border-top:none}
+  .swlock .br{right:0;bottom:0;border-left:none;border-top:none}
+  /* タイトル/オーバー */
+  .screen{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(4,5,10,.7);backdrop-filter:blur(2px)}
+  .screen.hidden{display:none}
+  .hidden{display:none}
+  .screen h1{font-size:clamp(1.8rem,7vw,3.5rem);font-weight:bold;letter-spacing:.1em;line-height:1;
+    background:linear-gradient(90deg,#ff2d55,#ffd60a,#34ffb0,#34d0ff,#c061ff,#fff);background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:rb 6s linear infinite}
+  @keyframes rb{to{background-position:300% 0}}
+  .screen .sub{color:#34d0ff;letter-spacing:.2em;font-size:.6rem;margin-top:16px}
+  .screen button{margin-top:34px;font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-weight:bold;font-size:1rem;letter-spacing:.18em;
+    color:#04050a;background:#ffd60a;border:none;padding:16px 40px;cursor:pointer;box-shadow:0 4px 0 #aa8800,0 0 22px rgba(255,255,0,.4)}
+  .screen button:active{transform:translateY(3px)}
+  #retrybtn.locked{opacity:.32;filter:grayscale(1);pointer-events:none;box-shadow:none;cursor:default}
+  .screen .fin{color:#ffd60a;font-size:1.6rem;font-weight:bold;margin-top:10px}
+  .hint2{position:absolute;bottom:74px;left:0;right:0;text-align:center;color:#456;font-size:.42rem;letter-spacing:.05em;line-height:1.6;pointer-events:none;padding:0 10px}
+  /* 撃つボタン(モバイル) */
+  .firebtn{position:fixed;bottom:90px;right:30px;width:84px;height:84px;border-radius:50%;z-index:15;
+    border:3px solid #ffd60a;background:rgba(255,214,10,.12);color:#ffd60a;font-weight:bold;letter-spacing:.1em;
+    font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-size:.8rem;pointer-events:auto;display:flex;align-items:center;justify-content:center}
+  .firebtn:active{background:rgba(255,214,10,.35)}
+  /* アクションボタン(剣・シールド)。2D版配置: FIREの周囲 */
+  .actbtn{position:fixed;width:62px;height:62px;border-radius:50%;z-index:15;pointer-events:auto;
+    font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-weight:bold;font-size:.66rem;line-height:1.05;
+    display:flex;align-items:center;justify-content:center;text-align:center}
+  .actbtn:active{filter:brightness(1.6)}
+  .sbrL{bottom:150px;right:118px;border:2px solid #ff9ed6;color:#ff9ed6;background:rgba(255,158,214,.14)}
+  .sbrR{bottom:150px;right:30px;border:2px solid #ff9ed6;color:#ff9ed6;background:rgba(255,158,214,.14)}
+  .shld{bottom:90px;right:122px;border:2px solid #34d0ff;color:#34d0ff;background:rgba(52,208,255,.14)}
+  /* 方向パッド(円形・指の位置で8方向。単一指で斜めも自在) */
+  .dpad{position:fixed;bottom:40px;left:34px;width:150px;height:150px;border-radius:50%;
+    border:2px solid rgba(52,208,255,.4);background:rgba(8,16,24,.35);pointer-events:auto;z-index:15;
+    backdrop-filter:blur(3px);touch-action:none}
+  .dpad .stick{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;
+    border-radius:50%;border:2px solid rgba(52,208,255,.8);background:rgba(52,208,255,.25);
+    transition:transform .05s;pointer-events:none}
+  .dpad .arrows{position:absolute;inset:0;pointer-events:none;color:rgba(52,208,255,.5);font-size:1rem}
+  .dpad .arrows i{position:absolute;font-style:normal}
+  .dpad .arrows .au{left:50%;top:6px;transform:translateX(-50%)}
+  .dpad .arrows .ad{left:50%;bottom:6px;transform:translateX(-50%)}
+  .dpad .arrows .al{left:8px;top:50%;transform:translateY(-50%)}
+  .dpad .arrows .ar{right:8px;top:50%;transform:translateY(-50%)}
+  /* PC(マウス環境)ではタッチUIを非表示。タッチデバイスのみ表示 */
+  .dpad,.firebtn,.actbtn{display:none}
+  @media (pointer:coarse){
+    body.playing .dpad{display:block}
+    body.playing .firebtn,body.playing .actbtn{display:flex}
+  }
+@keyframes psyblink{0%,100%{opacity:1}50%{opacity:.2}}
+#psyhud{animation:psyblink .7s steps(2,end) infinite}
+#psyhud.charging{animation:psyblink .15s steps(2,end) infinite}
+#psydots b{display:inline-block;width:14px;height:18px;margin-left:3px;background:#ff2d55;box-shadow:0 0 8px #ff2d55;vertical-align:middle}
+</style>
+</head>
+<body>
+<div id=&quot;app&quot;></div>
+<div class=&quot;hud&quot;>
+  <div class=&quot;topbar&quot;>SCORE <span class=&quot;score&quot; id=&quot;score&quot;>0</span></div>
+  <div id=&quot;psyhud&quot; style=&quot;position:absolute;top:46px;right:14px;z-index:13;font-family:inherit;font-size:18px;letter-spacing:2px;color:#ff2d55;text-shadow:0 0 8px #ff2d55;display:none&quot;>PSY <span id=&quot;psydots&quot;></span></div>
+  <div class=&quot;rbox&quot; id=&quot;rbox&quot;></div>
+  <div class=&quot;reticle&quot; id=&quot;reticle&quot;><span></span></div>
+  <div id=&quot;enemyarrows&quot; style=&quot;position:absolute;inset:0;pointer-events:none;z-index:12&quot;></div>
+  <div class=&quot;corner c1&quot;></div><div class=&quot;corner c2&quot;></div><div class=&quot;corner c3&quot;></div><div class=&quot;corner c4&quot;></div>
+  <div class=&quot;hpwrap&quot;><span class=&quot;lbl&quot;>HP</span><div class=&quot;hpbar&quot; id=&quot;hpbar&quot;></div></div>
+  <div class=&quot;shieldoverlay&quot; id=&quot;shieldoverlay&quot;>
+    <div class=&quot;shieldlabel&quot;>- SHIELD -</div>
+    <div class=&quot;shieldmeter&quot; id=&quot;shieldmeter&quot;></div>
+  </div>
+  <div class=&quot;wave&quot; id=&quot;wave&quot;>WAVE 1</div>
+</div>
+<div class=&quot;dpad&quot; id=&quot;dpad&quot;>
+  <div class=&quot;arrows&quot;><i class=&quot;au&quot;>▲</i><i class=&quot;ad&quot;>▼</i><i class=&quot;al&quot;>◀</i><i class=&quot;ar&quot;>▶</i></div>
+  <div class=&quot;stick&quot; id=&quot;dstick&quot;></div>
+</div>
+<button class=&quot;firebtn&quot; id=&quot;firebtn&quot;>FIRE</button>
+<button class=&quot;actbtn sbrL&quot; id=&quot;sbrLbtn&quot;>SBR<br>L</button>
+<button class=&quot;actbtn sbrR&quot; id=&quot;sbrRbtn&quot;>SBR<br>R</button>
+<button class=&quot;actbtn shld&quot; id=&quot;shldbtn&quot;>SHLD</button>
+<div class=&quot;dmg&quot; id=&quot;dmg&quot;></div>
+<div class=&quot;healfx&quot; id=&quot;healfx&quot;></div>
+<div class=&quot;lowhp&quot; id=&quot;lowhp&quot;></div>
+<div class=&quot;clashfx&quot; id=&quot;clashfx&quot;></div>
+<div id=&quot;swordlocks&quot; style=&quot;position:fixed;inset:0;pointer-events:none;z-index:12&quot;></div>
+<div class=&quot;screen&quot; id=&quot;title&quot;>
+  <h1>SPACE MS<br>BATTLE 3D</h1>
+  <div class=&quot;sub&quot;>Ver.2.0 &amp;nbsp; VOXEL COMBAT</div>
+  <button id=&quot;startbtn&quot;>▶START</button>
+</div>
+<div class=&quot;screen hidden&quot; id=&quot;over&quot;>
+  <h1>MISSION OVER</h1>
+  <div class=&quot;fin&quot; id=&quot;finscore&quot;>SCORE 0</div>
+  <div class=&quot;fin&quot; id=&quot;finhi&quot; style=&quot;font-size:.7rem;color:#ffd60a&quot;>HIGH SCORE 0</div>
+  <div id=&quot;nameentry&quot; class=&quot;hidden&quot; style=&quot;margin:14px 0&quot;>
+    <div style=&quot;font-family:'Press Start 2P','DotGothic16',monospace;font-size:.7rem;color:#ffd60a;margin-bottom:6px&quot;>NEW RECORD!</div>
+    <div style=&quot;font-family:'Press Start 2P','DotGothic16',monospace;font-size:.45rem;color:#34d0ff;margin-bottom:10px&quot;>ENTER YOUR NAME</div>
+    <div id=&quot;namechars&quot; style=&quot;display:flex;gap:8px;justify-content:center;margin-bottom:10px&quot;></div>
+    <input id=&quot;nameinput&quot; type=&quot;text&quot; maxlength=&quot;7&quot; autocomplete=&quot;off&quot; autocapitalize=&quot;characters&quot; autocorrect=&quot;off&quot; spellcheck=&quot;false&quot;
+      style=&quot;position:absolute;left:-9999px;width:1px;height:1px;opacity:0&quot; />
+    <!-- 入力が終わったら消す操作UI一式(ボタン・説明・OK) -->
+    <div id=&quot;nmcontrols&quot;>
+    <!-- スマホ用の専用操作ボタン(タップだけで入力できる) -->
+    <div style=&quot;display:flex;gap:8px;justify-content:center;align-items:center;margin-bottom:8px&quot;>
+      <button class=&quot;nmbtn&quot; id=&quot;nmleft&quot; style=&quot;font-size:.7rem&quot;>&amp;larr;</button>
+      <button class=&quot;nmbtn&quot; id=&quot;nmup&quot; style=&quot;font-size:.7rem&quot;>&amp;uarr;</button>
+      <button class=&quot;nmbtn&quot; id=&quot;nmdown&quot; style=&quot;font-size:.7rem&quot;>&amp;darr;</button>
+      <button class=&quot;nmbtn&quot; id=&quot;nmright&quot; style=&quot;font-size:.7rem&quot;>&amp;rarr;</button>
+      <button class=&quot;nmbtn&quot; id=&quot;nametype&quot; style=&quot;font-size:.5rem&quot;>&amp;#9000;</button>
+    </div>
+    <div style=&quot;font-family:'Press Start 2P','DotGothic16',monospace;font-size:.4rem;color:#6c9;line-height:1.8&quot;>
+      <div>&amp;uarr;&amp;darr;:CHAR &amp;nbsp; &amp;larr;&amp;rarr;:MOVE</div>
+      <div>TAP CHAR / TYPE KEY &amp;nbsp; OK:DONE</div>
+    </div>
+    <button id=&quot;nameok&quot; style=&quot;margin-top:10px;font-size:.5rem;padding:8px 24px&quot;>OK</button>
+    </div>
+  </div>
+  <div id=&quot;finrank&quot; style=&quot;font-family:'Press Start 2P','DotGothic16',monospace;font-size:.5rem;color:#34d0ff;line-height:1.8;margin:12px 0&quot;></div>
+  <button id=&quot;retrybtn&quot;>▶RETRY</button>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js&quot;></script>
+<script>
+// ============================================================
+// SPACE MS BATTLE 3D — FPS戦闘 第1段階
+// ============================================================
+const app=document.getElementById('app');
+const scene=new THREE.Scene();
+// 霧なし: 遠くまでずっと明るく見える(遠方が暗く沈まない)
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,3000);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));   // スマホの高精細画面でGPU負荷を抑える(2→1.5)
+app.appendChild(renderer.domElement);
+// WebGLコンテキストが失われても落ちないように(自動復帰)
+renderer.domElement.addEventListener('webglcontextlost',e=>{ e.preventDefault(); },false);
+
+scene.add(new THREE.AmbientLight(0x3a4a6a,0.9));
+const keyL=new THREE.DirectionalLight(0xffffff,1.1); keyL.position.set(8,14,10); scene.add(keyL);
+const rimC=new THREE.DirectionalLight(0x34d0ff,0.7); rimC.position.set(-12,3,6); scene.add(rimC);
+const rimM=new THREE.DirectionalLight(0xc061ff,0.5); rimM.position.set(10,-4,-8); scene.add(rimM);
+// 爆発用の点光源は「固定プール」で管理(光源数を一定に保ち、シェーダ再コンパイル嵐=クラッシュを防ぐ)
+const LIGHT_POOL=[]; for(let i=0;i<6;i++){ const pl=new THREE.PointLight(0xffffff,0,60); scene.add(pl); LIGHT_POOL.push(pl); }
+function flashLight(x,y,z,color,intensity,range){
+  let best=LIGHT_POOL[0]; for(const pl of LIGHT_POOL){ if(pl.intensity<best.intensity) best=pl; }  // 最も空いてる光源を再利用
+  best.color.setHex(color); best.position.set(x,y,z); best.distance=range||60; best.intensity=intensity;
+}
+
+// 星空(カメラに追従して常に周囲を囲む)
+let starField=null;
+(function stars(){
+  const g=new THREE.BufferGeometry(),p=[],c=[];
+  // 星の色: 白を主体に、青・水色・薄黄・薄ピンクをたまに混ぜて宇宙space感を出す
+  const palette=[
+    [1,1,1],[1,1,1],[1,1,1],[1,1,1],   // 白(多め)
+    [0.6,0.8,1.0],                       // 青白
+    [0.5,0.9,1.0],                       // 水色
+    [1.0,0.95,0.7],                      // 薄黄
+    [1.0,0.75,0.9],                      // 薄ピンク
+    [1.0,0.85,0.6]                       // 橙白
+  ];
+  for(let i=0;i<1400;i++){
+    // カメラ相対の箱(±700)。メッシュがカメラ追従なので常に全画面を覆う
+    const x=(Math.random()-0.5)*1400;
+    const y=(Math.random()-0.5)*1400;
+    const z=-40-Math.random()*900;
+    p.push(x,y,z);
+    const col=palette[Math.floor(Math.random()*palette.length)];
+    c.push(col[0],col[1],col[2]);
+  }
+  g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+  g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+  starField=new THREE.Points(g,new THREE.PointsMaterial({size:3.0,sizeAttenuation:true,vertexColors:true}));
+  scene.add(starField);
+})();
+
+// ---- パレット/ボクセルヘルパ ----
+const PAL={white:0xf2f5ff,ltgray:0xb8c2d0,gray:0x6a7585,dark:0x2a3340,black:0x141a22,
+  cyan:0x34d0ff,yellow:0xffd60a,red:0xff2d55,green:0x22ee66,dgreen:0x0f9940,orange:0xff7a18,
+  purple:0xc061ff,magenta:0xff00cc,ltpink:0xff9ed6,dpink:0xff1a8c,dpurple:0x6a2a9a,
+  brown:0xb5731f,dbrown:0x6e4012};
+function mat(hex,emi){return new THREE.MeshStandardMaterial({color:hex,roughness:0.55,metalness:0.35,emissive:emi||0x000000,emissiveIntensity:emi?0.9:0});}
+const UNIT_BOX=new THREE.BoxGeometry(1,1,1);   // 全ボクセル共有(GPUメモリ&amp;生成churn激減=クラッシュ根本対策)
+function vox(g,x,y,z,w,h,d,hex,emi){const m=new THREE.Mesh(UNIT_BOX,mat(hex,emi));m.position.set(x,y,z);m.scale.set(w,h,d);g.add(m);return m;}
+function grp(x,y,z){const o=new THREE.Group();o.position.set(x,y,z);return o;}
+
+// === 自機のサーベル(画面手前・カメラ子。swing時に振り抜く演出) ===
+scene.add(camera);
+const pSaber=new THREE.Group();
+const pBlade=new THREE.Group();
+vox(pBlade,0,0,0,0.4,0.4,1.4,PAL.gray);                       // 柄(細め)
+vox(pBlade,0,0,5.0,0.32,0.32,9.0,PAL.dpink,PAL.dpink);        // 刃(細く長い・濃いピンク発光)
+vox(pBlade,0,0,5.0,0.16,0.16,9.0,PAL.white,PAL.white);        // 芯(白)
+pSaber.add(pBlade);
+pSaber.position.set(0,-2.2,-6);                               // 手元(画面下手前)
+camera.add(pSaber);
+pSaber.visible=false;
+
+// === 自機のシールド(画面手前・カメラ子。S押下中に構える) ===
+const pShield=new THREE.Group();
+// シアンのボクセル盾(枠+発光面)
+vox(pShield,0,0,0,6.0,7.0,0.5,0x0a3a4a);                      // 盾の本体(濃いシアン)
+vox(pShield,0,0,0.3,5.0,6.0,0.3,PAL.cyan,PAL.cyan);          // 中央の発光面
+vox(pShield,0,3.2,0.4,5.6,0.6,0.4,PAL.white,PAL.white);      // 上枠
+vox(pShield,0,-3.2,0.4,5.6,0.6,0.4,PAL.white,PAL.white);     // 下枠
+vox(pShield,2.8,0,0.4,0.6,6.6,0.4,PAL.white,PAL.white);      // 右枠
+vox(pShield,-2.8,0,0.4,0.6,6.6,0.4,PAL.white,PAL.white);     // 左枠
+vox(pShield,0,0,0.5,1.4,1.4,0.4,PAL.white,PAL.white);        // 中央エンブレム
+pShield.position.set(0,-1.5,-7);                             // 画面手前(構えると正面を覆う)
+camera.add(pShield);
+pShield.visible=false;
+
+// ============================================================
+// GRUNT(関節構造・簡易版。接近・被弾・撃破に必要な部位)
+// ============================================================
+function buildGrunt(tone){
+  const C={main:(tone&amp;&amp;tone.main)||PAL.green, dark:(tone&amp;&amp;tone.dark)||PAL.dgreen};
+  const root=new THREE.Group();
+  const P={};
+  const torso=grp(0,0,0); root.add(torso); P.torso=torso;
+  vox(torso,0,1.0,0,4.6,4.2,3.6,C.main);
+  vox(torso,0,-1.6,0,3.0,2.0,2.6,C.dark);
+  vox(torso,0,1.2,1.9,2.0,1.6,0.5,PAL.dark);
+  vox(torso,0,2.2,-2.2,2.8,2.8,1.0,C.dark);
+  const thrL=vox(torso,0.9,2.0,-2.8,0.7,0.7,0.5,PAL.orange,PAL.orange); P.thrL=thrL;
+  const thrR=vox(torso,-0.9,2.0,-2.8,0.7,0.7,0.5,PAL.orange,PAL.orange); P.thrR=thrR;
+  const head=grp(0,3.4,0); torso.add(head); P.head=head;
+  vox(head,0,1.0,0,2.4,2.0,2.4,C.dark);
+  vox(head,0,1.0,1.3,2.6,0.7,0.4,PAL.black);
+  const eye=vox(head,0,1.0,1.55,0.7,0.7,0.3,PAL.red,PAL.red); P.eye=eye;
+  // 肩・腕(構え)
+  const shL=grp(3.4,2.4,0); torso.add(shL); P.shL=shL;
+  vox(shL,0.4,0,0,2.2,2.4,3.0,C.main);
+  const armL=grp(0.4,-1.2,0); shL.add(armL); P.armL=armL;
+  vox(armL,0,-1.4,0,1.8,3.0,2.0,C.main);
+  vox(armL,0,-3.6,0,1.4,1.4,1.4,C.dark);
+  // 左手のサーベル(二刀流。抜刀時に表示)
+  const handL=grp(0,-3.6,0.4); armL.add(handL); P.handL=handL;
+  const saberL=grp(0,0,0); handL.add(saberL); P.saberL=saberL;
+  vox(saberL,0,0,0.6,0.4,0.4,1.0,PAL.gray);            // 柄
+  vox(saberL,0,0,3.4,0.45,0.45,5.0,PAL.ltpink,PAL.ltpink); // 刃
+  saberL.visible=false;
+  const shR=grp(-3.4,2.4,0); torso.add(shR); P.shR=shR;
+  vox(shR,-0.4,0,0,2.2,2.4,3.0,C.main);
+  const armR=grp(-0.4,-1.2,0); shR.add(armR); P.armR=armR;
+  vox(armR,0,-1.4,0,1.8,3.0,2.0,C.main);
+  const hand=grp(0,-3.6,0.4); armR.add(hand); P.hand=hand;
+  const rifle=grp(0,0,0); hand.add(rifle); P.rifle=rifle;
+  vox(rifle,0,0,1.2,1.2,1.3,2.6,PAL.dark);
+  vox(rifle,0,0.1,3.2,0.7,0.7,2.4,PAL.gray);
+  const muzzle=vox(rifle,0,0.1,5.4,0.7,0.7,0.6,PAL.red,PAL.red); P.muzzle=muzzle;
+  vox(rifle,0,-1.0,0.6,0.7,1.6,0.9,PAL.dark);
+  // サーベル(抜刀時に表示。薄ピンクの刃)
+  const saber=grp(0,0,0); hand.add(saber); P.saber=saber;
+  vox(saber,0,0,0.6,0.4,0.4,1.0,PAL.gray);            // 柄
+  vox(saber,0,0,3.4,0.45,0.45,5.0,PAL.ltpink,PAL.ltpink); // 刃
+  saber.visible=false;
+  // 脚
+  const hipL=grp(1.4,-2.6,0); torso.add(hipL); P.hipL=hipL;
+  vox(hipL,0,-1.2,0,2.2,2.6,2.6,C.main);
+  vox(hipL,0,-3.6,0.2,1.9,2.4,2.2,C.dark);
+  vox(hipL,0,-5.0,0.7,2.0,1.0,3.0,PAL.dark);
+  const hipR=grp(-1.4,-2.6,0); torso.add(hipR); P.hipR=hipR;
+  vox(hipR,0,-1.2,0,2.2,2.6,2.6,C.main);
+  vox(hipR,0,-3.6,0.2,1.9,2.4,2.2,C.dark);
+  vox(hipR,0,-5.0,0.7,2.0,1.0,3.0,PAL.dark);
+  // === 茶色ヘビー: 肩・胴に重装甲ブロック追加 + 脚を太く(もっさり重量級) ===
+  if(tone&amp;&amp;tone.heavy){
+    // 胸部の追加装甲(分厚い前面ブロック)
+    vox(torso,0,1.2,1.6,5.4,3.2,1.4,C.dark);
+    vox(torso,0,1.2,2.3,3.0,2.0,0.6,C.main);
+    // 肩の大型パッド(もっさり張り出す)
+    vox(shL,1.2,1.0,0,2.4,2.2,3.8,C.dark);
+    vox(shL,1.6,1.4,0,1.0,1.2,3.2,C.main);
+    vox(shR,-1.2,1.0,0,2.4,2.2,3.8,C.dark);
+    vox(shR,-1.6,1.4,0,1.0,1.2,3.2,C.main);
+    // 腰回りの装甲スカート
+    vox(torso,0,-2.8,0,4.4,1.6,3.4,C.dark);
+    // 太もも・脛を太く(重い脚)
+    vox(hipL,0,-1.2,0,3.0,2.8,3.2,C.main);
+    vox(hipL,0,-3.6,0.2,2.7,2.6,2.8,C.dark);
+    vox(hipR,0,-1.2,0,3.0,2.8,3.2,C.main);
+    vox(hipR,0,-3.6,0.2,2.7,2.6,2.8,C.dark);
+    // 足先も大きく
+    vox(hipL,0,-5.0,0.9,2.8,1.3,3.8,PAL.dark);
+    vox(hipR,0,-5.0,0.9,2.8,1.3,3.8,PAL.dark);
+  }
+  root.userData.P=P;
+  root.scale.setScalar(0.5);                    // ゲーム内サイズ
+  return root;
+}
+
+// ============================================================
+// 戦闘機 FIGHTER(正面面積大きめ。ライト・スラスター可動)
+// ============================================================
+function buildFighter(){
+  const root=new THREE.Group();
+  const P={lights:[],thrusters:[]};
+  const g=grp(0,0,0); root.add(g); P.body=g;
+  // 機首
+  vox(g,0,0,3.8,2.4,1.8,3.0,PAL.cyan);
+  const nose=vox(g,0,0,5.6,1.0,1.0,1.4,PAL.white,PAL.cyan); P.lights.push(nose); P.nose=nose;
+  // コックピット
+  vox(g,0,0.6,1.2,3.4,2.6,3.4,PAL.ltgray);
+  const canopy=vox(g,0,1.2,2.8,2.2,1.2,1.0,PAL.cyan,PAL.cyan); P.lights.push(canopy);
+  // 本体
+  vox(g,0,0,-0.6,4.4,2.8,3.2,PAL.white);
+  vox(g,0,-0.3,-2.6,3.2,2.0,2.2,PAL.gray);
+  // 主翼
+  vox(g,4.0,0,-0.6,4.4,1.0,2.8,PAL.white); vox(g,-4.0,0,-0.6,4.4,1.0,2.8,PAL.white);
+  const wtL=vox(g,6.6,0,-1.2,1.8,0.8,1.8,PAL.cyan,PAL.cyan); P.lights.push(wtL);
+  const wtR=vox(g,-6.6,0,-1.2,1.8,0.8,1.8,PAL.cyan,PAL.cyan); P.lights.push(wtR);
+  vox(g,5.8,0.8,-1.4,0.5,1.8,1.2,PAL.ltgray); vox(g,-5.8,0.8,-1.4,0.5,1.8,1.2,PAL.ltgray);
+  // 下面
+  vox(g,0,-1.6,0.4,3.0,1.2,2.4,PAL.gray);
+  // 尾翼
+  vox(g,0,1.8,-3.0,0.5,2.6,1.4,PAL.white);
+  vox(g,1.6,1.2,-3.0,0.4,1.8,1.2,PAL.ltgray); vox(g,-1.6,1.2,-3.0,0.4,1.8,1.2,PAL.ltgray);
+  // スラスター(2基)
+  const thL=vox(g,1.4,-0.2,-3.6,1.2,1.2,0.7,PAL.orange,PAL.orange); P.thrusters.push(thL);
+  const thR=vox(g,-1.4,-0.2,-3.6,1.2,1.2,0.7,PAL.orange,PAL.orange); P.thrusters.push(thR);
+  // 機首にビーム発射口(muzzle代わり)
+  P.muzzle=nose;
+  root.userData.P=P;
+  root.userData.kind='fighter';
+  root.scale.setScalar(0.42);                   // ゲーム内サイズ(やや小型)
+  return root;
+}
+
+// ============================================================
+// NEMESIS(紫エース機。関節構造・ツノ・スパイク・シアン単眼)
+// ============================================================
+function buildNemesis(){
+  const root=new THREE.Group();
+  const P={};
+  const torso=grp(0,0,0); root.add(torso); P.torso=torso;
+  vox(torso,0,1.2,0,4.0,4.6,3.0,PAL.purple);
+  vox(torso,0,3.6,0,3.0,1.2,2.6,PAL.white);
+  vox(torso,0,-1.6,0,2.6,2.0,2.0,0x5a1a88);
+  vox(torso,0,1.4,1.7,1.2,2.6,0.5,PAL.magenta,PAL.magenta);
+  vox(torso,0,2.6,-2.0,2.4,3.0,1.2,0x5a1a88);
+  const thrL=vox(torso,1.2,2.0,-2.9,0.8,0.8,0.6,PAL.magenta,PAL.magenta); P.thrL=thrL;
+  const thrR=vox(torso,-1.2,2.0,-2.9,0.8,0.8,0.6,PAL.magenta,PAL.magenta); P.thrR=thrR;
+  // 頭(単眼+ツノ)
+  const head=grp(0,3.6,0); torso.add(head); P.head=head;
+  vox(head,0,1.2,0.1,2.0,1.8,2.0,PAL.purple);
+  vox(head,0,1.1,1.25,1.8,0.6,0.3,PAL.black);
+  const eye=vox(head,0,1.1,1.5,0.9,0.5,0.3,PAL.cyan,PAL.cyan); P.eye=eye;
+  vox(head,0,2.8,0.8,0.3,2.2,0.3,PAL.yellow,PAL.yellow);  // ツノ
+  vox(head,0,2.1,0.5,0.5,1.2,0.5,PAL.white);
+  // 肩(スパイク)+腕
+  const shL=grp(3.3,2.8,0); torso.add(shL); P.shL=shL;
+  vox(shL,0,0,0,1.6,2.2,2.8,PAL.purple);
+  vox(shL,0.9,0.6,0,0.6,0.6,2.0,PAL.white);
+  vox(shL,0.6,1.0,0,0.9,0.7,1.4,PAL.magenta,PAL.magenta);
+  const armL=grp(0,-1.4,0); shL.add(armL); P.armL=armL;
+  vox(armL,0,-1.2,0,1.3,2.8,1.5,0x5a1a88);
+  vox(armL,0,-3.0,0,1.0,1.0,1.0,PAL.white);
+  // 左手のサーベル(二刀流)
+  const handL=grp(0,-3.0,0.3); armL.add(handL); P.handL=handL;
+  const saberL=grp(0,0,0); handL.add(saberL); P.saberL=saberL;
+  vox(saberL,0,0,0.6,0.4,0.4,1.0,PAL.gray);
+  vox(saberL,0,0,3.4,0.45,0.45,5.2,PAL.ltpink,PAL.ltpink);
+  saberL.visible=false;
+  const shR=grp(-3.3,2.8,0); torso.add(shR); P.shR=shR;
+  vox(shR,0,0,0,1.6,2.2,2.8,PAL.purple);
+  vox(shR,-0.9,0.6,0,0.6,0.6,2.0,PAL.white);
+  vox(shR,-0.6,1.0,0,0.9,0.7,1.4,PAL.magenta,PAL.magenta);
+  const armR=grp(0,-1.4,0); shR.add(armR); P.armR=armR;
+  vox(armR,0,-1.2,0,1.3,2.8,1.5,0x5a1a88);
+  vox(armR,0,-3.0,0,1.0,1.0,1.0,PAL.white);
+  const hand=grp(0,-3.0,0.3); armR.add(hand); P.hand=hand;
+  const rifle=grp(0,0,0); hand.add(rifle); P.rifle=rifle;
+  vox(rifle,0,0,1.2,1.1,1.2,2.6,PAL.black);
+  vox(rifle,0,0.1,3.2,0.6,0.6,2.6,0x5a1a88);
+  const muzzle=vox(rifle,0,0.1,5.6,0.7,0.7,0.6,PAL.magenta,PAL.magenta); P.muzzle=muzzle;
+  vox(rifle,0,-1.0,0.6,0.6,1.4,0.8,PAL.black);
+  // サーベル(抜刀時に表示)
+  const saber=grp(0,0,0); hand.add(saber); P.saber=saber;
+  vox(saber,0,0,0.6,0.4,0.4,1.0,PAL.gray);
+  vox(saber,0,0,3.4,0.45,0.45,5.2,PAL.ltpink,PAL.ltpink);
+  saber.visible=false;
+  // 脚
+  const hipL=grp(1.3,-2.6,0); torso.add(hipL); P.hipL=hipL;
+  vox(hipL,0,-1.0,0,1.7,2.6,2.2,PAL.purple);
+  vox(hipL,0,-3.3,0.1,1.4,2.6,1.8,0x5a1a88);
+  vox(hipL,0,-5.0,0.6,1.6,1.0,2.9,PAL.black);
+  const hipR=grp(-1.3,-2.6,0); torso.add(hipR); P.hipR=hipR;
+  vox(hipR,0,-1.0,0,1.7,2.6,2.2,PAL.purple);
+  vox(hipR,0,-3.3,0.1,1.4,2.6,1.8,0x5a1a88);
+  vox(hipR,0,-5.0,0.6,1.6,1.0,2.9,PAL.black);
+  root.userData.P=P;
+  root.userData.kind='nemesis';
+  root.scale.setScalar(0.52);                   // GRUNTより一回り大きい
+  return root;
+}
+
+// 戦艦(最初の3Dデザイン踏襲・コア弱点は左/中央/右の3種)
+function buildShip(cside){
+  const g=grp(0,0,0);
+  const P={};
+  // 巨大な艦体(横長) — 紫系グラデーション
+  vox(g,0,0,0,16,4,6,PAL.purple);
+  vox(g,0,2.4,0,12,1.2,5,PAL.magenta);              // 上甲板(明るいマゼンタ)
+  vox(g,0,-2.4,0,12,1.2,4,PAL.dpurple);             // 艦底(暗い紫)
+  // 艦橋(後方)
+  vox(g,0,3.6,-1.5,3,3,2.5,PAL.purple);
+  vox(g,0,5.2,-1.5,1.5,1,1.5,PAL.cyan,PAL.cyan);    // 艦橋ライト(シアン)
+  // 前方の砲塔列
+  for(const sx of [-5,-2.5,0,2.5,5]){
+    vox(g,sx,2.0,3.0,1.4,1.0,1.4,PAL.dpurple);
+    vox(g,sx,2.0,3.9,0.5,0.5,1.2,PAL.magenta);       // 砲身(マゼンタ)
+  }
+  // 側面のスラスター列(黄の発光ライト・左右対称)
+  for(const sx of [-6,-3,0,3,6]){
+    vox(g,sx,-1.0,-3.2,0.8,0.8,0.5,PAL.yellow,PAL.yellow);
+  }
+  // 装甲ブロック(左右対称)
+  vox(g,7.5,0,1.5,1.5,2.5,3,PAL.dpurple);  vox(g,-7.5,0,1.5,1.5,2.5,3,PAL.dpurple);
+  vox(g,7.5,0,-1.5,1.5,2.5,2.5,PAL.purple); vox(g,-7.5,0,-1.5,1.5,2.5,2.5,PAL.purple);
+  // 弱点コア: 位置で左/中央/右(cside=-1/0/1)。脈動発光(赤)
+  const cx=(cside<0)?-5:(cside>0?5:0);
+  vox(g,cx,0,3.2,2.4,2.4,1.0,PAL.black);            // コアの窪み(枠)
+  const core=grp(cx,0,3.7); g.add(core); P.core=core;
+  const coreGlow=vox(core,0,0,0,1.4,1.4,0.6,PAL.red,PAL.red); P.coreGlow=coreGlow;
+  // コア周囲のリング(黄)
+  vox(g,cx,1.4,3.5,2.0,0.3,0.4,PAL.yellow,PAL.yellow);
+  vox(g,cx,-1.4,3.5,2.0,0.3,0.4,PAL.yellow,PAL.yellow);
+  // 砲塔(発射演出用に参照)
+  P.turrets=[];
+  for(const sx of [-5,0,5]){ const t=grp(sx,2.0,3.5); P.turrets.push(t); }
+  g.userData.P=P;
+  g.userData.kind='ship';
+  g.userData.cside=cside;
+  g.scale.setScalar(1.0);
+  return g;
+}
+
+// ============================================================
+// 敵管理
+// ============================================================
+let enemies=[];
+function spawnGrunt(heavy){
+  // heavy=茶色ヘビー: 色違い・大きさ1.2倍・速度66%・耐久150%・弾/剣の強さは同じ
+  const e=heavy ? buildGrunt({main:PAL.brown,dark:PAL.dbrown,heavy:true}) : buildGrunt();
+  if(heavy) e.scale.setScalar(0.5*1.2*1.15);     // 緑の1.2倍 × さらに1.15倍
+  const ang=Math.random()*6.28, rad=18+Math.random()*16;
+  e.position.set(selfX+Math.cos(ang)*rad*0.5, selfY+(Math.random()-0.5)*8, -120-Math.random()*40);
+  e.userData.kind='grunt';
+  e.userData.heavy=!!heavy;
+  e.userData.state='approach';
+  e.userData.hp=Math.round((heavy?6:4)*diffHP()); e.userData.maxHp=e.userData.hp;  // 面が進むと硬く(3面ごと+50%)
+  e.userData.spdMul=(heavy?0.66:1)*diffSpd();            // ヘビーは66%。面が進むと速く(最大1.5倍)
+  e.userData.t=Math.random()*6;
+  e.userData.fireT=2+Math.random()*3;
+  e.userData.speed=8+Math.random()*5;
+  e.userData.exploded=false;
+  e.userData.stateT=0;
+  // --- 2D版移植: 有機的移動パラメータ ---
+  e.userData.phase=Math.random()*6.28;          // ゆらぎ位相
+  e.userData.ox=selfX+(Math.random()-0.5)*44;         // 定位置オフセットX(自機基準・中央に固まらない)
+  e.userData.oy=selfY+(Math.random()-0.5)*28;         // 定位置オフセットY(自機基準)
+  e.userData.zv=0; e.userData.zT=40+Math.random()*120;   // 前後ブーストの間隔
+  e.userData.bvx=0; e.userData.bvy=0; e.userData.bigT=60+Math.random()*160; // 大ダッシュ間隔
+  e.userData.dodge=30+Math.random()*90;         // 瞬間回避の間隔
+  scene.add(e);
+  enemies.push(e);
+}
+function spawnFighter(){
+  const e=buildFighter();
+  const ang=Math.random()*6.28, rad=20+Math.random()*18;
+  e.position.set(selfX+Math.cos(ang)*rad, selfY+(Math.random()-0.5)*14, -130-Math.random()*40);
+  e.userData.kind='fighter';
+  e.userData.state='approach';
+  e.userData.hp=2; e.userData.maxHp=2;                              // 戦闘機は脆い(一撃で落ちる)
+  e.userData.t=Math.random()*6;
+  e.userData.fireT=1.5+Math.random()*2.5;
+  e.userData.speed=16+Math.random()*8;          // 速い
+  e.userData.exploded=false;
+  e.userData.stateT=0;
+  e.userData.weave=Math.random()*6.28;          // 蛇行用位相
+  e.userData.phase=Math.random()*6.28;
+  e.userData.ox=selfX+(Math.random()-0.5)*60;          // 定位置オフセット(自機基準)
+  e.userData.oy=selfY+(Math.random()-0.5)*40;
+  scene.add(e);
+  enemies.push(e);
+}
+function spawnNemesis(){
+  const e=buildNemesis();
+  const ang=Math.random()*6.28, rad=16+Math.random()*12;
+  e.position.set(selfX+Math.cos(ang)*rad*0.5, selfY+(Math.random()-0.5)*8, -110-Math.random()*30);
+  e.userData.kind='nemesis';
+  e.userData.state='approach';
+  e.userData.hp=36; e.userData.maxHp=36;                             // 高い耐久(固定36)
+  e.userData.t=Math.random()*6;
+  e.userData.fireT=1.0+Math.random()*1.2;
+  e.userData.speed=30+Math.random()*8;          // 通常機の約3倍速い
+  e.userData.exploded=false;
+  e.userData.stateT=0;
+  // --- 2D版移植: 有機的移動パラメータ(NEMESISは間隔が短く=高速) ---
+  e.userData.phase=Math.random()*6.28;
+  e.userData.ox=selfX+(Math.random()-0.5)*60;         // より広く動く(自機基準)
+  e.userData.oy=selfY+(Math.random()-0.5)*38;
+  e.userData.zv=0; e.userData.zT=20+Math.random()*60;     // 短い間隔=頻繁にブースト
+  e.userData.bvx=0; e.userData.bvy=0; e.userData.bigT=20+Math.random()*60; // 頻繁に大ダッシュ
+  e.userData.dodge=15+Math.random()*40;         // 頻繁に回避
+  scene.add(e);
+  enemies.push(e);
+  showNemesisWarning();
+}
+function spawnShip(ox,oy){
+  const cside=[-1,0,1][Math.floor(Math.random()*3)];   // コア位置: 左/中央/右
+  const e=buildShip(cside);
+  e.userData.cside=cside;                              // 当たり判定で使う(コアのある1/3ブロック)
+  const offX=(ox||0), offY=(oy||0);                    // 艦ごとの横/高さオフセット(重なり防止)
+  e.position.set(selfX + offX + (Math.random()-0.5)*8, selfY + offY + (Math.random()-0.5)*6, -160-Math.random()*30);
+  e.userData.state='ship'; e.userData.t=0; e.userData.stateT=0;
+  e.userData.hp=Math.round(20*diffHP()); e.userData.maxHp=e.userData.hp; e.userData.phase=Math.random()*6.28;  // 面が進むと硬く
+  e.userData.fireT=2.0+Math.random()*2.0;
+  e.userData.offX=offX; e.userData.offY=offY;          // 自機追従時もこのオフセットを保つ
+  scene.add(e);
+  enemies.push(e);
+}
+// === サイコミュ(PSY)機体: 白い細長いビット。先端の発射口から黄ビーム ===
+function buildPsyUnit(){
+  const root=new THREE.Group();
+  const P={};
+  const g=grp(0,0,0); root.add(g); P.body=g;
+  // 本体(白い細長い菱形ボディ)
+  vox(g,0,0,0,2.2,1.4,4.2,PAL.white,0x222244);
+  vox(g,0,0,2.6,1.4,1.0,2.0,PAL.ltgray);            // 前部
+  vox(g,0,0,-2.4,1.6,1.1,1.6,PAL.gray);             // 後部スラスター
+  // 左右のスタビライザー(羽)
+  vox(g,1.7,0,-0.4,1.2,0.4,2.4,PAL.ltgray);
+  vox(g,-1.7,0,-0.4,1.2,0.4,2.4,PAL.ltgray);
+  // 発射口(先端で光る・シアン/黄)
+  const muzzle=vox(g,0,0,3.8,0.9,0.9,0.7,PAL.yellow,PAL.yellow); P.muzzle=muzzle;
+  // 中央のサイコミュ・コア(マゼンタ点滅)
+  const core=vox(g,0,0.5,-0.2,0.7,0.7,0.7,PAL.magenta,PAL.magenta); P.core=core;
+  root.userData.P=P;
+  root.scale.setScalar(0.85);
+  return root;
+}
+function startWave(){
+  wave++; updateHUD();
+  // ===== ウェーブ境界でGPU負荷リセット(クラッシュ防止) =====
+  for(const d of debris) freeMesh(d.mesh); debris.length=0;
+  for(const fb of fireballs) freeMesh(fb.mesh); fireballs.length=0;
+  for(const b of beams) freeGroup(b.mesh); beams.length=0;
+  for(const sh of eshots) freeMesh(sh.mesh); eshots.length=0;
+  for(const pl of LIGHT_POOL) pl.intensity=0;
+  // (解像度は据え置き。ライト省略と境界リセットで対処)
+  // 2D版踏襲: MS n体 + 戦闘機 f体 を時間差で予約スポーン
+  const n=Math.min(2+wave,6);          // GRUNT数(wave1→3体, wave2→4体… 最大6)
+  const f=Math.min(wave,4);            // 戦闘機数(wave1→1体… 最大4)
+  // 4面以降は緑:茶=2:1で茶色ヘビーを混ぜる(3体に1体がヘビー)
+  let mst=0.3;                          // MSの湧き時刻(累積)
+  for(let i=0;i<n;i++){
+    const heavy = (wave>=4 &amp;&amp; i%3===2);
+    pendingSpawns.push({kind:'ms', t:mst, heavy});
+    mst += 0.6+Math.random()*1.47;      // 次の機体まで0.6〜2.07秒あける(最低1.5倍・最大2.3倍でばらつき)
+  }
+  let ft=0.6;                          // 戦闘機の湧き時刻(累積)
+  for(let i=0;i<f;i++){
+    pendingSpawns.push({kind:'ftr', t:ft});
+    ft += 0.6+Math.random()*1.47;       // 次の機体まで0.6〜2.07秒あける(MSと同じばらつき)
+  }
+  // 戦艦: W2,4=1隻 → W6,8=2隻 → W10〜=3隻(偶数ウェーブ)
+  if(wave>=2 &amp;&amp; wave%2===0){
+    const sn=wave>=10?3:(wave>=6?2:1);
+    for(let i=0;i<sn;i++) pendingSpawns.push({kind:'shp', t:2.0+i*2.5, ox:(i-(sn-1)/2)*40, oy:(i-(sn-1)/2)*14});
+  }
+  // NEMESIS(紫MS): 20面以降は30%で出現、それ以前は1/100。常に単機(1体まで)。
+  { const nemChance = wave>=20 ? 0.30 : 0.01;
+    if(Math.random()<nemChance &amp;&amp; !enemies.some(o=>o.userData.kind==='nemesis') &amp;&amp; !pendingSpawns.some(p=>p.kind==='nem')){
+      pendingSpawns.push({kind:'nem', t:1.5 + (0.3+Math.random()*0.6)});
+    } }
+  // ウェーブ表示
+  showWaveText();
+}
+function showWaveText(){
+  let w=document.getElementById('wavetext');
+  if(!w){
+    w=document.createElement('div'); w.id='wavetext';
+    w.style.cssText='position:fixed;top:42%;left:0;right:0;text-align:center;z-index:23;'+
+      'color:#34d0ff;font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-weight:bold;font-size:1.6rem;'+
+      'letter-spacing:.34em;text-shadow:0 0 16px rgba(52,208,255,.7);pointer-events:none;';
+    document.body.appendChild(w);
+  }
+  w.textContent='WAVE '+wave;
+  w.style.display='block'; w.style.opacity='1';
+  beep(523,0.08,'square',0.08); beep(659,0.08,'square',0.08,0.08); beep(784,0.12,'square',0.08,0.16);
+  setTimeout(()=>{ w.style.transition='opacity .5s'; w.style.opacity='0'; setTimeout(()=>{w.style.display='none';w.style.transition='';},500); },1200);
+}
+// NEMESIS警告表示
+function showNemesisWarning(){
+  let w=document.getElementById('nemwarn');
+  if(!w){
+    w=document.createElement('div'); w.id='nemwarn';
+    w.style.cssText='position:fixed;top:38%;left:0;right:0;text-align:center;z-index:25;'+
+      'color:#ff00cc;font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-weight:bold;font-size:1.4rem;'+
+      'letter-spacing:.3em;text-shadow:0 0 18px rgba(255,0,204,.8);pointer-events:none;';
+    document.body.appendChild(w);
+  }
+  w.textContent='⚠ NEMESIS DETECTED ⚠';
+  w.style.display='block'; w.style.opacity='1';
+  let blink=0;
+  const iv=setInterval(()=>{ w.style.opacity=(blink++%2)?'1':'0.2'; },200);
+  setTimeout(()=>{ clearInterval(iv); w.style.display='none'; },3000);
+  beep(440,0.15,'square',0.1); beep(880,0.15,'square',0.1,0.15); beep(440,0.15,'square',0.1,0.3);
+}
+
+// ============================================================
+// 弾(敵弾=赤 / 自機ビーム=黄)
+// ============================================================
+let beams=[];      // 自機ビーム
+let eshots=[];     // 敵弾
+let healBoxes=[];  // 回復ボックス(2D版: 1000点ごとに出現)
+let nextHeal=2000; // 次に回復ボックスが出るスコア(2000点ごと)
+// 面ごとの難易度係数(じわじわ上昇・上限あり)。wave1=基準1.0
+function diffFire(){ return Math.min(1.7, 1+(wave-1)*0.05); }  // 発射頻度: 面ごと+5%(最大1.7倍)
+function diffSpd(){  return Math.min(1.5, 1+(wave-1)*0.035); } // 移動速度: 面ごと+3.5%(最大1.5倍)
+function diffHP(){   return 1+Math.floor((wave-1)/3)*0.5; }    // HP: 3面ごとに+50%(段階的)
+let healFx=0, healFull=false;  // 回復エフェクト
+// 回復ボックスを出現(自機の前方の奥から流れてくる)
+function spawnHealBox(){
+  const g=grp(0,0,0);
+  vox(g,0,0,0,3,3,3,PAL.dgreen);                       // 箱(濃い緑)
+  vox(g,0,0,1.6,2.2,2.2,0.3,PAL.green,PAL.green);      // 前面パネル(発光緑)
+  vox(g,0,0.7,1.9,1.6,0.5,0.3,PAL.red,PAL.red);        // 赤い十字(横)
+  vox(g,0,0,1.9,0.5,1.6,0.3,PAL.red,PAL.red);          // 赤い十字(縦)
+  vox(g,0,-0.7,1.9,1.6,0.5,0.3,PAL.red,PAL.red);
+  g.position.set(selfX+(Math.random()-0.5)*40, selfY+(Math.random()-0.5)*26, -150-Math.random()*30);
+  g.userData.spin=Math.random()*6.28;
+  scene.add(g); healBoxes.push(g);
+}
+function fireBeam(){
+  if(!playing||hp<=0)return;
+  if(shieldOn)return;                                    // シールド中は攻撃不可
+  if(selfStaggerT>0)return;                              // よろけ中(敵に受けられた)は撃てない
+  if(playerSaber&amp;&amp;playerSaber.dir===1)return;            // 右手で右剣を振っている(ビームと同じ右手)
+  // チャンバラ中(敵が突進・抜刀して斬りかかっている)はビーム封印
+  if(enemies.some(e=>e.userData.state==='melee'||e.userData.state==='charging')){
+    beep(440,0.03,'square',0.06); beep(220,0.04,'square',0.06,0.03);
+    showFloatText('BEAM LOCKED MODE!',PAL.red);
+    return;
+  }
+  // 画面中心(照準)方向へ発射
+  const dir=new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  const origin=camera.position.clone().add(dir.clone().multiplyScalar(2));
+  origin.x+=1.4; origin.y-=1.6;   // 自機の銃口位置(右手=体の右下からの発射感)
+  // ボクセルビーム(黄色い弾。長さを2倍にしてビームらしく)
+  const m=new THREE.Group();
+  vox(m,0,0,0,0.5,0.5,1.4,PAL.yellow,PAL.yellow);       // 芯(進行方向に長い)
+  vox(m,0,0,0.9,0.26,0.26,0.5,PAL.white,PAL.white);     // 先端の輝き
+  vox(m,0,0,-0.9,0.26,0.26,0.4,PAL.orange,PAL.orange);  // 後端
+  m.position.copy(origin);
+  m.quaternion.copy(camera.quaternion);
+  scene.add(m);
+  if(beams.length<40) beams.push({mesh:m,dir:dir.clone(),life:0.8}); else freeGroup(m);   // 自機ビーム上限
+  // 発射音
+  beep(880,0.05,'square',0.06); beep(1320,0.05,'square',0.05,0.03);
+  // リコイル
+  recoil=0.5;
+  // === 2D版方式の命中判定: 照準(画面中心)に重なる最も近い敵を選び、中心/周辺でダメージを分ける ===
+  resolveBeamHit();
+}
+// 2D版 fireBeamHit の移植: 照準ゾーン3段階判定
+function resolveBeamHit(){
+  let best=null, bestScore=1e9;
+  for(const e of enemies){
+    const u=e.userData;
+    if(u.state==='dying')continue;
+    // 戦艦は照準判定にコアの画面位置を使う(狙ったコアの艦が選ばれる=複数隻でも狙い分け可)
+    let ep;
+    if(u.kind==='ship' &amp;&amp; u.P &amp;&amp; u.P.core){
+      const cw=new THREE.Vector3(); u.P.core.getWorldPosition(cw); cw.project(camera);
+      ep={x:cw.x,y:cw.y,z:cw.z};
+    } else ep=enemyScreenPos(e);
+    if(ep.z>1)continue;                                  // 画面後方は無視
+    const dist=e.position.distanceTo(camera.position);                      // 自機からの距離(2D版のzに相当)
+    // 照準(画面中心 NDC=0,0)からの捕捉枠。遠いほど画面上は小さい→枠も小さく
+    let inGrab;
+    if(u.kind==='ship'){
+      // 戦艦は本体(横長・縦短)+わずかな余白だけを判定枠に(本体から離れたらMISSEDを出さない)
+      const sc0=e.scale.x||1;
+      const gX=(8*sc0+3)/Math.max(8,dist);     // 本体半幅 + わずかな余白
+      const gY=(2.2*sc0+2)/Math.max(8,dist);   // 本体半高 + わずかな余白
+      inGrab = Math.abs(ep.x)<gX &amp;&amp; Math.abs(ep.y)<gY;
+    }else{
+      const grab=(u.kind==='nemesis'?5.2:u.kind==='fighter'?4.6:4.4)/Math.max(8,dist);
+      inGrab = Math.abs(ep.x)<grab &amp;&amp; Math.abs(ep.y)<grab;
+    }
+    if(inGrab){
+      const score=ep.x*ep.x+ep.y*ep.y;
+      if(score<bestScore){ bestScore=score; best=e; }
+    }
+  }
+  if(!best)return;                                        // 照準外=当たらない
+  const u=best.userData;
+  const ep=enemyScreenPos(best);
+  const dist=best.position.distanceTo(camera.position);
+  // 戦艦: コア(選択と同じ基準)をカメラのローカル座標に変換し判定。至近は広く・遠距離は中央1/3
+  if(u.kind==='ship'){
+    const cw=new THREE.Vector3();
+    if(u.P&amp;&amp;u.P.core) u.P.core.getWorldPosition(cw); else best.getWorldPosition(cw);  // コア基準(選択と一致)
+    const local=camera.worldToLocal(cw.clone());        // カメラから見たコア位置(前方は -z)
+    const fwd=-local.z;                                  // 前方距離
+    if(fwd<=0){                                          // コアが後方=当たらない
+      explode(best.position.clone(),0.3); showFloatText('MISSED',0x88aaff);
+      beep(330,0.05,'square',0.05); return;
+    }
+    const angX=local.x/fwd, angY=local.y/fwd;            // コアの視線からの角度(tan)
+    // コアを中心に「機体前面の1/3ブロック+大きめ余白」を当たり判定に(左/中央/右どこでも当てやすい)
+    // 前方距離fwdで割って見かけ角に。近接=広い/遠距離=狭い(自然なメリハリ)
+    const sc=best.scale.x||1;
+    const blockHalfW=(16*sc)/6 + 2.5;                    // 前面1/3ブロックの半幅 + 余白(当てやすく)
+    const blockHalfH=(4*sc)/2 + 2.0;                     // 艦の高さの半分 + 余白
+    const zoneW=blockHalfW/fwd;                          // コア中心からの横許容
+    const zoneH=blockHalfH/fwd;                          // 縦許容
+    const hitCore = Math.abs(angX)<zoneW &amp;&amp; Math.abs(angY)<zoneH;
+    if(hitCore){
+      applyBeamDamage(best,2,true);                   // コアのある1/3ブロックに命中=ダメージ
+      showFloatText('HIT!',PAL.yellow);               // 命中表示
+    }else{
+      explode(best.position.clone().add(new THREE.Vector3((Math.random()-0.5)*10,(Math.random()-0.5)*4,4)),0.3);
+      showFloatText('MISSED',0x88aaff);
+      beep(330,0.05,'square',0.05); beep(220,0.05,'square',0.04,0.03);
+    }
+    return;
+  }
+  const coreR=(u.kind==='nemesis'?2.2:u.kind==='fighter'?2.0:1.9)/Math.max(8,dist);
+  const inCore=(Math.abs(ep.x)<coreR &amp;&amp; Math.abs(ep.y)<coreR);
+  let dmg;
+  if(u.kind==='fighter') dmg=99;                          // 戦闘機は一撃
+  else dmg=inCore?4:2;                                    // 中心=大ダメージ4 / 周辺=小ダメージ2
+  applyBeamDamage(best,dmg,inCore);
+}
+function applyBeamDamage(e,dmg,inCore){
+  const u=e.userData;
+  u.hp-=dmg;
+  // ヒット火花(敵の位置に)。敵被弾=白+黄色中心
+  explode(e.position.clone(),0.25,[0xffffff,0xffff00,0xffffff,0xffe000,0xfff7cc,0xffff00]);
+  sndEnemyHit();                          // 敵が斬られた/被弾: ノイジーにズバッ(共通)
+  if(inCore){ beep(1320,0.04,'square',0.05); showVital(e); }
+  if(u.hp<=0){
+    u.state='dying'; u.stateT=0; u.exploded=false;
+    score+=(u.kind==='fighter')?80:(u.kind==='nemesis')?3000:(u.kind==='ship')?2000:(u.heavy?200:100); killCount++; updateHUD();
+  }else{
+    // 状態は変えない(移動は続ける)。HITは被弾エフェクトとして上から重ねる
+    u.hitT=0.0001;                       // >0 でHITエフェクト発動
+    u.hitLean=(Math.random()<0.5?-1:1);  // よろける向き(左右ランダム)
+  }
+}
+// === チャンバラ(近接戦闘) ===
+function duelBusy(self){
+  return enemies.some(o=>o!==self&amp;&amp;(o.userData.state==='charging'||o.userData.state==='melee'));
+}
+// 自機が剣を振る(dir: -1=左, +1=右)
+function swing(dir){
+  if(!playing||hp<=0)return;
+  if(psyActive())return;                                 // サイコミュ発動中は操作不可
+  if(shieldOn)return;                                    // シールド中は不可
+  if(selfStaggerT>0)return;                              // よろけ中(敵に受けられた)は振れない=連打中断
+  if(dir<0 &amp;&amp; swingCdL>0)return;                         // 左剣は左のクールダウン中だけ不可(右は振れる)
+  if(dir>0 &amp;&amp; swingCdR>0)return;                         // 右剣は右のクールダウン中だけ不可(左は振れる)
+  if(dir===1&amp;&amp;beams.length>0)return;                     // 右剣はビーム飛行中は振れない(同じ右手)
+  if(dir<0)swingCdL=0.14; else swingCdR=0.14;            // 振った側だけロック=左右交互は連続で出せる
+  if(clashBounce)clashBounce=null;                      // 受け成功後の弾かれ演出は次の振りで即キャンセル(反応優先)
+  playerSaber={dir,t:0};
+  beep(220,0.04,'square',0.06); beep(440,0.04,'square',0.06,0.04); beep(880,0.06,'square',0.06,0.08);
+  recoil=0.5;
+  // 敵弾の斬り落としは毎フレーム判定(メインループ側)で処理
+  // 敵を選ぶ: 剣の射程内(近い敵)だけ。チャンバラ中でも遠い突進敵は斬れない
+  let best=null,bestZ=-1e9;
+  for(const e of enemies){
+    const u=e.userData;
+    if(u.state==='dying')continue;
+    if(e.position.z<=SBR_Z)continue;            // 剣の射程外(遠い)は斬れない
+    const ep=enemyScreenPos(e); if(ep.z>1)continue;
+    const inMelee=(u.state==='melee');           // 抜刀して斬り合い中
+    // 振った側: 左剣(dir<0)は画面左寄り、右剣(dir>0)は画面右寄りの敵に届く
+    const sideOk = dir<0 ? ep.x<0.3 : ep.x>-0.3;
+    if(!sideOk &amp;&amp; !inMelee)continue;             // 斬り合い中は側を問わず受け/斬り対象
+    if(e.position.z>bestZ){bestZ=e.position.z;best=e;}
+  }
+  if(!best)return;
+  const u=best.userData;
+  if(u.state==='melee'&amp;&amp;!u.parried){
+    // 敵は自機と向かい合う(鏡像)。敵の振る側(mside)は自機から見て反対側に来る。
+    // 自機はその来る側と同じ側の剣で受けるとCLASH(完全防御)
+    const incomingSide=-u.mside;                  // 自機視点での斬撃が来る側
+    if(dir===incomingSide){
+      // 正しい側で受けた = CLASH(鍔迫り合い・お互いノーダメージ・剣がはじかれる)
+      u.parried=true; u.meleeHitDone=true;
+      clashFx=1.0; shake=5;                         // 演出のみ(全体フリーズ・自機入力ロックは廃止)
+      // 受け手(自機)はペナルティなし=即行動可。弾かれた攻め手(敵)だけ u.clashBounce で0.6秒よろける
+      showFloatText('NO HIT!',PAL.cyan);
+      const cx=dir*3.0, cy=1.0, cz=DUEL_Z+2;
+      clashSpark(new THREE.Vector3(cx,cy,cz));
+      sndClash();                                   // カキン(剣がぶつかった金属音)
+      // 剣がはじかれる演出: 自機・敵の剣を反発(逆再生風に弾き返す)
+      clashBounce={t:0,dir:dir};                    // 自機の剣のはじかれ
+      u.clashBounce={t:0,side:u.mside};             // 敵の剣のはじかれ
+      // playerSaberは保持(はじかれアニメで使う)。はじかれ後に消える
+      return;
+    }
+    // 間違った側で振った(相手右・自分も右など) = 相討ち。お互いダメージを受ける
+    const ep2=enemyScreenPos(best);
+    const coreR2=2.0/Math.max(8,best.position.distanceTo(camera.position));
+    const isV=(Math.abs(ep2.x)<coreR2&amp;&amp;Math.abs(ep2.y)<coreR2);
+    let dmg2=(u.kind==='nemesis')?(isV?2:1):(isV?4:2);
+    if(best.userData.heavy) dmg2/=4;             // 茶色ヘビーは剣に対する耐久4倍
+    if((best.userData.hp-dmg2)<=0 &amp;&amp; u.kind!=='ship') pendingCleave={pos:best.position.clone()};  // 剣が振り切った時に斬撃
+    applyBeamDamage(best,dmg2,isV);               // 敵にダメージ
+    u.parried=true; u.meleeHitDone=true;          // 敵の今の振りは終了(相討ちで両者離れる)
+    // 自機もダメージ(相討ち)
+    if(!psyActive()){ hp-=2; dmgFlash=1.5; shake=8; }  // 相討ちダメージ(PSY発動中は無敵)
+    showFloatText('TRADE!',PAL.orange);           // 相討ち
+    sndSelfCrit();                                // 自分も深く斬られた音
+    updateHUD();
+    if(hp<=0)gameOver();
+    playerSaber=null;
+    return;
+  }
+  // === 敵の防御(双方ルール): チャンバラ中の敵に斬りかかると一定確率で受け切られる(GUARD) ===
+  // 受けられたら自機がよろけて連打が中断される(=高速連打だけでは押し切れない)。受けた敵はノーペナルティ。
+  if(u.state==='melee' &amp;&amp; !u.guardCdActive){
+    const guardChance=(u.kind==='nemesis')?0.5:(u.heavy?0.5:0.38);   // 中くらい(読み合いが生まれる)
+    if(Math.random()<guardChance){
+      u.guardCdActive=true; u.guardCdT=0.45;        // 敵は短い間だけ受け連発を防ぐ(一方的ループ防止)
+      selfStaggerT=0.6;                              // 自機よろけ=連打中断(0.6秒)
+      swingCdL=Math.max(swingCdL,0.6); swingCdR=Math.max(swingCdR,0.6);  // 左右とも一時ロック
+      playerSaber=null;                              // 振りを中断
+      clashBounce={t:0,dir};                         // 自機の剣がはじかれる演出
+      clashFx=0.8; shake=6; showFloatText('GUARDED!',PAL.red);
+      clashSpark(new THREE.Vector3(dir*3.0,1.0,DUEL_Z+2));
+      sndClash();
+      return;
+    }
+  }
+  // チャンバラ中でない/受けられなかった敵 → 通常斬撃(中心=大ダメージ)
+  const ep=enemyScreenPos(best);
+  const coreR=2.0/Math.max(8,best.position.distanceTo(camera.position));
+  const inCore=(Math.abs(ep.x)<coreR&amp;&amp;Math.abs(ep.y)<coreR);
+  let swDmg=(u.kind==='fighter')?99:(inCore?5:3);
+  if(best.userData.heavy) swDmg/=4;             // 茶色ヘビーは剣ダメージ1/4
+  else if(best.userData.kind==='nemesis') swDmg/=2;   // ネメシスは剣ダメージ1/2
+  const lethal=(best.userData.hp - swDmg)<=0;   // この一撃で撃破か
+  if(lethal &amp;&amp; u.kind!=='ship') pendingCleave={pos:best.position.clone()};    // 剣が振り切った時に斬撃エフェクト
+  applyBeamDamage(best, swDmg, inCore);
+}
+// 敵の斬撃がプレイヤーに当たる
+function meleeHitPlayer(e){
+  if(psyActive())return;                            // サイコミュ発動中は無敵
+  if(shieldOn&amp;&amp;!shBroken){
+    // シールドで防ぐ: 耐久を1消費(2D版)
+    shHP--; shHitFx=1.0; shake=5; beep(880,0.06,'square',0.07); beep(1320,0.05,'square',0.05,0.03);
+    if(shHP<=0){ shHP=0; shBroken=true; shieldOn=false; showFloatText('SHIELD BREAK!',PAL.red); beep(200,0.3,'sawtooth',0.12); noise(0.3,0.18,0,1200); }
+    updateHUD();
+    return;
+  }
+  hp-=((e.userData.heavy||e.userData.kind==='nemesis')?2.4:1.2); dmgFlash=1.5; shake=8;  // ヘビー/ネメシスの剣は緑の2倍(2.4)
+  sndSelfCrit();                                   // 深く斬られた: ノイジーに長い打撃(クリティカル)
+  vibrate([40,30,60]);                             // スマホ振動(深い被弾)
+  updateHUD();
+  if(hp<=0)gameOver();
+}
+// 剣射程ロックマーカー(DOMプール)
+const swordLockPool=[];
+// 画面外にいる敵の方向を画面端の矢印で示す(片寄り・離れすぎ対策)
+const arrowPool=[];
+function updateEnemyArrows(){
+  const cont=document.getElementById('enemyarrows'); if(!cont)return;
+  if(!playing){ for(const a of arrowPool)a.style.display='none'; return; }
+  const offs=[];
+  for(const e of enemies){
+    const u=e.userData;
+    if(u.state==='dying')continue;
+    if(u.waiting)continue;                         // 再出現待ち(消えている)中は矢印を出さない
+    const ep=enemyScreenPos(e);
+    // 画面内(かつ前方)なら矢印不要。少し内側で判定して早めに矢印を出す
+    const onScreen = ep.z<1 &amp;&amp; Math.abs(ep.x)<0.88 &amp;&amp; Math.abs(ep.y)<0.88;
+    if(onScreen)continue;
+    // 画面に対する方向。NDC(上が+Y)を画面座標(下が+Y)へY反転する
+    let dx=ep.x, dy=-ep.y;
+    if(ep.z>1){ dx=-dx; dy=-dy; }                 // 後方は逆向き
+    const ang=Math.atan2(dy,dx);                  // 画面中心からの角度(画面座標系)
+    offs.push({ang, kind:u.kind});
+  }
+  // プール確保
+  while(arrowPool.length<offs.length){
+    const a=document.createElement('div');
+    a.style.cssText='position:absolute;font-size:1.1rem;font-weight:bold;transform-origin:center;will-change:transform';
+    a.textContent='➤';
+    cont.appendChild(a); arrowPool.push(a);
+  }
+  const cx=gameL+gameW/2, cy=gameT+gameH/2;
+  const rx=gameW*0.42, ry=gameH*0.42;             // 画面端の楕円半径
+  for(let i=0;i<arrowPool.length;i++){
+    const a=arrowPool[i];
+    if(i<offs.length){
+      const {ang,kind}=offs[i];
+      const px=cx+Math.cos(ang)*rx, py=cy+Math.sin(ang)*ry;
+      a.style.display='block';
+      a.style.left=(px-10)+'px'; a.style.top=(py-10)+'px';
+      a.style.transform='rotate('+ang+'rad)';
+      a.style.color = kind==='ship'?'#c061ff':kind==='nemesis'?'#c061ff':kind==='fighter'?'#ffd60a':'#ff4d4d';
+      a.style.opacity='0.85';
+    }else a.style.display='none';
+  }
+}
+function updateSwordLocks(){
+  const cont=document.getElementById('swordlocks'); if(!cont)return;
+  const inRange=[];
+  for(const e of enemies){
+    const u=e.userData;
+    if(u.state==='dying')continue;
+    if(e.position.z<=SBR_Z)continue;             // 射程外(まだ遠い)
+    const ep=enemyScreenPos(e); if(ep.z>1)continue;
+    inRange.push({e,ep});
+  }
+  while(swordLockPool.length<inRange.length){
+    const m=document.createElement('div'); m.className='swlock';
+    m.innerHTML='<i class=&quot;c tl&quot;></i><i class=&quot;c tr&quot;></i><i class=&quot;c bl&quot;></i><i class=&quot;c br&quot;></i>';
+    cont.appendChild(m); swordLockPool.push(m);
+  }
+  const blink=(Math.floor(performance.now()/120)%2)===0;
+  for(let i=0;i<swordLockPool.length;i++){
+    const m=swordLockPool[i];
+    if(i<inRange.length){
+      const {e,ep}=inRange[i];
+      const px=gameL+gameW*(ep.x*0.5+0.5);
+      const py=gameT+gameH*(-ep.y*0.5+0.5);
+      const sz=Math.max(26,Math.min(90, 240/Math.max(6,e.position.distanceTo(camera.position))));
+      m.style.display='block';
+      m.style.left=(px-sz/2)+'px'; m.style.top=(py-sz/2)+'px';
+      m.style.width=sz+'px'; m.style.height=sz+'px';
+      m.style.setProperty('--c', blink?'#ffd60a':'#34d0ff');   // 黄↔シアン点滅
+    }else{
+      m.style.display='none';
+    }
+  }
+}
+function showFloatText(txt,color){
+  const el=document.createElement('div');
+  el.textContent=txt;
+  const hex='#'+(color||0x34d0ff).toString(16).padStart(6,'0');
+  el.style.cssText='position:fixed;left:'+(gameL+gameW/2)+'px;top:'+(gameT+gameH*0.4)+'px;transform:translate(-50%,-50%);z-index:24;'+
+    'color:'+hex+';font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;font-weight:bold;font-size:0.55rem;letter-spacing:.1em;pointer-events:none;';
+  document.body.appendChild(el);
+  let life=0;
+  const iv=setInterval(()=>{life+=0.04;el.style.opacity=Math.max(0,1-life);el.style.transform='translate(-50%,-50%) scale('+(1+life*0.5)+')';if(life>=1){clearInterval(iv);el.remove();}},30);
+}
+// VITAL! 表示(中心ヒット時)
+function showVital(e){
+  const ep=enemyScreenPos(e);
+  const el=document.createElement('div');
+  el.textContent='HIT!';
+  el.style.cssText='position:fixed;z-index:24;color:#ffd60a;font-family:&quot;Press Start 2P&quot;,&quot;DotGothic16&quot;,monospace;'+
+    'font-weight:bold;font-size:0.35rem;letter-spacing:.05em;pointer-events:none;';
+  el.style.left=(gameL+gameW*(ep.x*0.5+0.5))+'px';
+  el.style.top=(gameT+gameH*(-ep.y*0.5+0.5)-20)+'px';
+  document.body.appendChild(el);
+  let life=0;
+  const iv=setInterval(()=>{ life+=0.05; el.style.transform='translateY('+(-life*20)+'px)'; el.style.opacity=Math.max(0,1-life); if(life>=1){clearInterval(iv);el.remove();} },30);
+}
+function enemyFire(e){
+  const muzWorld=new THREE.Vector3();
+  if(e.userData.P.muzzle)e.userData.P.muzzle.getWorldPosition(muzWorld); else muzWorld.copy(e.position);
+  const dir=camera.position.clone().sub(muzWorld).normalize();  // 自機(カメラ)へ向けて
+  // ボクセル弾: 真っ赤な弾の中心に黄色を貼る(小さめ・画面を覆わない)
+  const bullet=new THREE.Group();
+  vox(bullet,0,0,0,0.5,0.5,0.5,0xff0000,0xff0000);       // 真っ赤な本体
+  // 黄色いコアを各面の中心に貼る(どの向きから見ても中心が黄色)
+  vox(bullet,0,0,0.26,0.26,0.26,0.04,PAL.yellow,PAL.yellow);
+  vox(bullet,0,0,-0.26,0.26,0.26,0.04,PAL.yellow,PAL.yellow);
+  vox(bullet,0.26,0,0,0.04,0.26,0.26,PAL.yellow,PAL.yellow);
+  vox(bullet,-0.26,0,0,0.04,0.26,0.26,PAL.yellow,PAL.yellow);
+  vox(bullet,0,0.26,0,0.26,0.04,0.26,PAL.yellow,PAL.yellow);
+  vox(bullet,0,-0.26,0,0.26,0.04,0.26,PAL.yellow,PAL.yellow);
+  bullet.position.copy(muzWorld);
+  scene.add(bullet);
+  if(eshots.length<70) eshots.push({mesh:bullet,dir,speed:34,life:5}); else freeMesh(bullet);   // 敵弾上限
+  beep(220,0.12,'sawtooth',0.05);
+}
+// 戦艦の主砲: マゼンタの大きい弾を自機方向±ばらつきで発射
+function shipFire(e){
+  const origin=e.position.clone();
+  origin.y+=2; origin.x+=(Math.random()-0.5)*20;        // 砲塔のどこかから
+  const aim=camera.position.clone().sub(origin).normalize();
+  aim.x+=(Math.random()-0.5)*0.5; aim.y+=(Math.random()-0.5)*0.4; aim.normalize();
+  const bullet=new THREE.Group();
+  vox(bullet,0,0,0,0.9,0.9,0.9,0xff0000,0xff0000);       // 赤の大弾(敵弾は赤で統一)
+  vox(bullet,0,0,0,0.5,0.5,1.1,PAL.yellow,PAL.yellow);   // 黄の芯
+  bullet.position.copy(origin);
+  scene.add(bullet);
+  if(eshots.length<70) eshots.push({mesh:bullet,dir:aim,speed:26,life:6,big:true}); else freeMesh(bullet);   // 敵弾上限
+  beep(110,0.18,'sawtooth',0.07); beep(70,0.22,'square',0.06,0.04);
+}
+
+// ============================================================
+// 爆発(共通・原色赤黄白・サイズ可変)
+// ============================================================
+let debris=[], fireballs=[];
+let smokePuffs=[];   // 損傷した機体から出る白い煙
+// 白い煙を1粒出す(ダメージを受けた機体用)。大きく・白く・はっきり
+function emitSmoke(pos){
+  if(smokePuffs.length>60)return;                    // 軽量化: 煙が増えすぎたら抑制
+  const s=0.9+Math.random()*1.1;                     // 粒を大きく
+  const shade=[0xffffff,0xffffff,0xf4f4f4][Math.floor(Math.random()*3)];  // 白を強調
+  const m=new THREE.Mesh(UNIT_BOX,
+    new THREE.MeshBasicMaterial({color:shade,transparent:true,opacity:0.85}));  // 濃いめ
+  m.scale.setScalar(s);
+  m.position.set(pos.x+(Math.random()-0.5)*2.5, pos.y+(Math.random()-0.5)*2, pos.z+(Math.random()-0.5)*2.5);
+  scene.add(m);
+  smokePuffs.push({mesh:m,life:1,
+    v:new THREE.Vector3((Math.random()-0.5)*2, 3+Math.random()*2, (Math.random()-0.5)*2),  // 上に立ち昇る
+    gr:0.8+Math.random()*0.6});   // 膨張率
+}
+// CLASH(相打ち)火花: 剣がかち合った位置に白・シアン・黄の火花を散らす
+function clashSpark(pos){
+  const colors=[0xffffff,0x34d0ff,0xffd60a,0xffffff,0x34d0ff];
+  for(let i=0;i<20;i++){
+    const s=0.2+Math.random()*0.6;
+    const col=colors[i%colors.length];
+    const m=new THREE.Mesh(UNIT_BOX,mat(col,col)); m.scale.setScalar(s);
+    m.position.copy(pos);
+    scene.add(m);
+    const a=Math.random()*6.28,el=(Math.random()-0.5)*Math.PI,sp=12+Math.random()*30;
+    debris.push({mesh:m,v:new THREE.Vector3(Math.cos(a)*Math.cos(el)*sp,Math.sin(el)*sp,Math.sin(a)*Math.cos(el)*sp),
+      rx:(Math.random()-0.5)*0.8,ry:(Math.random()-0.5)*0.8,life:1});
+  }
+  // 中心の閃光(固定プールの点光源=光源数が変わらず再コンパイルが起きない)
+  flashLight(pos.x,pos.y,pos.z,0xaaf0ff,8,40);
+}
+// チャンバラ中の敵を赤みを帯びさせる(2D版: melee/charging で機体が赤くなる)
+// 元の色を保ちつつ、発光(emissive)に赤を加えて赤みがかる
+function setDuelTint(e,on){
+  const u=e.userData;
+  if(on){
+    if(!u._origEmis){
+      u._origEmis=[];
+      e.traverse(o=>{
+        if(o.isMesh &amp;&amp; o.material &amp;&amp; o.material.emissive &amp;&amp; !(u.P&amp;&amp;u.P.saber&amp;&amp;isChildOf(o,u.P.saber))){
+          u._origEmis.push([o, o.material.emissive.getHex(), o.material.emissiveIntensity]);
+        }
+      });
+    }
+    const blink=(Math.floor(performance.now()/110)%2)===0;
+    const inten=blink?0.55:0.3;                 // 赤みの強さが点滅
+    for(const [o] of u._origEmis){
+      o.material.emissive.setHex(0xff0000);     // 赤い発光を乗せる
+      o.material.emissiveIntensity=inten;
+    }
+  }else if(u._origEmis){
+    for(const [o,hex,intn] of u._origEmis){
+      o.material.emissive.setHex(hex);          // 元の発光に戻す
+      o.material.emissiveIntensity=intn;
+    }
+    u._origEmis=null;
+  }
+}
+function isChildOf(obj,parent){
+  let p=obj;
+  while(p){ if(p===parent)return true; p=p.parent; }
+  return false;
+}
+// 胴を真っ二つにする横一文字のピンク斬撃エフェクト(チャンバラ撃破時)
+// 腰の位置で自機サーベルの太さで輝り、胴幅よりはみ出す光の斬閃
+function slashCleave(pos){
+  const flash=new THREE.Group();
+  const waistY=-0.3;                            // 腰の高さ
+  const W=34;                                   // 胴幅より大きくはみ出す長い軌跡
+  // カメラに近すぎると画面を覆う/内側に入るので、最低でもz=-10より奥に出す
+  const fp=pos.clone(); if(fp.z>-10)fp.z=-10;
+  // 中核の刃(自機サーベルの太さ・濃いピンク発光)
+  const blade=new THREE.Mesh(new THREE.BoxGeometry(W,0.8,0.8),
+    new THREE.MeshBasicMaterial({color:brightenHex(0xff1a8c,1.3),transparent:true,opacity:1,depthTest:false}));
+  blade.position.y=waistY; flash.add(blade);
+  // 白い芯(刃の中心の眩しい輝き)
+  const corew=new THREE.Mesh(new THREE.BoxGeometry(W,0.35,0.35),
+    new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:1,depthTest:false}));
+  corew.position.y=waistY; flash.add(corew);
+  // ふんわりした外周グロー(刃より太く、淡いピンク。胴を裂いた光の余韻)
+  const glow=new THREE.Mesh(new THREE.BoxGeometry(W,2.2,0.8),
+    new THREE.MeshBasicMaterial({color:brightenHex(0xff5ec4,1.3),transparent:true,opacity:0.55,depthTest:false}));
+  glow.position.y=waistY; flash.add(glow);
+  flash.position.copy(fp); scene.add(flash);
+  // 強い閃光(白→ピンク)
+  flashLight(fp.x,fp.y+waistY,fp.z,0xffffff,9,60);
+  // 胴の上半分・下半分が上下に割れて飛び散る破片(真っ二つ感)
+  for(let i=0;i<16;i++){
+    const top=i<8; const s=0.5+Math.random()*0.7;
+    const dc=brightenHex(top?0xff8ad0:0xff1a8c,1.3);          // 破片ボクセルの色を輝度130%に
+    const m=new THREE.Mesh(UNIT_BOX, mat(dc,dc)); m.scale.setScalar(s);
+    m.position.set(fp.x+(Math.random()-0.5)*3, fp.y+waistY+(top?1:-1)*(0.5+Math.random()), fp.z+(Math.random()-0.5)*3);
+    scene.add(m);
+    const dir=top?1:-1;
+    debris.push({mesh:m,v:new THREE.Vector3((Math.random()-0.5)*5, dir*(2.5+Math.random()*3), (Math.random()-0.5)*5),
+      rx:(Math.random()-0.5)*0.6,ry:(Math.random()-0.5)*0.6,life:1});
+  }
+  // 斬閃アニメ: 一瞬で横に走り抜け(横スケール0→1)、眩しく光って消える
+  let t=0;
+  const grow=()=>{
+    t+=0.09;                                    // 短い時間で一気に(一瞬眩しく)
+    const run=Math.min(1,t*8);                  // 横に瞬時に走り抜ける
+    flash.scale.x=run;
+    blade.material.opacity=Math.max(0,1-t*1.0);
+    corew.material.opacity=Math.max(0,1-t*1.0);
+    glow.material.opacity=Math.max(0,0.7-t*0.8);
+    glow.scale.y=1+t*2.0;                        // グローは縦に膨らんで余韻
+    if(t<1)requestAnimationFrame(grow); else freeGroup(flash);
+  };
+  grow();
+  // ズバァッと長く爽快な斬撃音(さらに1.2倍長く)
+  noise(0.69,0.28,0,2500,true); noise(0.414,0.16,0.05,1100,true);
+  beep(1100,0.11,'sawtooth',0.1); beep(700,0.166,'sawtooth',0.08,0.04); beep(350,0.276,'sawtooth',0.06,0.1);
+}
+// 軽量化: 破片・煙で使い回す単位キューブ(1x1x1)。毎回newしない
+// メッシュをシーンから外し、GPUメモリも解放(共有ジオメトリUNIT_BOXは破棄しない)
+function freeMesh(m){
+  if(!m)return;
+  scene.remove(m);
+  if(m.geometry &amp;&amp; m.geometry!==UNIT_BOX){ try{m.geometry.dispose();}catch(e){} }
+  if(m.material){ const a=Array.isArray(m.material)?m.material:[m.material]; for(const x of a){ try{x.dispose();}catch(e){} } }
+}
+// グループ(敵MS・戦艦など子メッシュ多数)をシーンから外し、全子のGPUメモリを解放
+function freeGroup(g){
+  if(!g)return;
+  scene.remove(g);
+  g.traverse(o=>{
+    if(o.isMesh){
+      if(o.geometry &amp;&amp; o.geometry!==UNIT_BOX){ try{o.geometry.dispose();}catch(e){} }
+      if(o.material){ const a=Array.isArray(o.material)?o.material:[o.material]; for(const x of a){ try{x.dispose();}catch(e){} } }
+    }
+  });
+}
+// 16進カラーの輝度をf倍にする(255でクランプ)
+function brightenHex(hex,f){
+  let r=Math.min(255,Math.round((hex>>16&amp;255)*f));
+  let g=Math.min(255,Math.round((hex>>8&amp;255)*f));
+  let b=Math.min(255,Math.round((hex&amp;255)*f));
+  return (r<<16)|(g<<8)|b;
+}
+function explode(pos,scale=1,cols){
+  const colors=cols||[PAL.green,PAL.dgreen,0xff0000,0xffff00,0xffffff,0xff0000,0xffff00];
+  const dn = debris.length>=240 ? 0 : (debris.length>170 ? 8 : 24);   // 混雑時はデブリを減らす(上限)
+  for(let i=0;i<dn;i++){
+    const s=(0.3+Math.random()*1.0)*scale;
+    const bc=brightenHex(colors[i%colors.length],1.3);        // 破片ボクセルの色を輝度130%に
+    const m=new THREE.Mesh(UNIT_BOX,mat(bc,i%2?bc:0));
+    m.position.copy(pos); m.scale.setScalar(s);
+    scene.add(m);
+    const a=Math.random()*6.28,el=(Math.random()-0.5)*Math.PI,sp=(8+Math.random()*22)*scale;
+    debris.push({mesh:m,v:new THREE.Vector3(Math.cos(a)*Math.cos(el)*sp,Math.sin(el)*sp,Math.sin(a)*Math.cos(el)*sp),
+      rx:(Math.random()-0.5)*0.5,ry:(Math.random()-0.5)*0.5,life:1});
+  }
+  const fn = fireballs.length>=36 ? 0 : (fireballs.length>22 ? 2 : 5);   // 火球も上限
+  for(let i=0;i<fn;i++){
+    const col=[0xffffff,0xffff00,0xff0000][i%3];
+    // 立方体の組み合わせで火の玉を作る(中心+周囲の小立方体)
+    const fb=new THREE.Group();
+    const fmat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.95});
+    const add=(x,y,z,s)=>{const c=new THREE.Mesh(UNIT_BOX,fmat);c.position.set(x,y,z);c.scale.set(s,s,s);fb.add(c);};
+    add(0,0,0,1.0);                          // 中心
+    add(0.6,0.1,0,0.6); add(-0.5,0.4,0.2,0.6);  // 周囲のブロック
+    add(0.1,-0.6,0.3,0.5); add(0.2,0.5,-0.5,0.5);
+    add(-0.4,-0.3,-0.4,0.45); add(0.5,-0.2,0.5,0.4);
+    fb.position.copy(pos); fb.position.x+=(Math.random()-0.5)*3*scale; fb.position.y+=(Math.random()-0.5)*3*scale;
+    fb.rotation.set(Math.random()*3,Math.random()*3,Math.random()*3);
+    fb.userData.fmat=fmat;                   // 透明度制御用
+    scene.add(fb);
+    fireballs.push({mesh:fb,grow:(3+Math.random()*3)*scale,delay:i*1.2,t:0,cluster:true});
+  }
+  // 点光源は重い(増減でシェーダ再コンパイル＆モバイルのライト上限)。
+  // 小さな爆発(命中火花)には付けず、大きな爆発のみ・同時数も上限で抑える=連打クラッシュ防止
+  if(scale>=1){
+    flashLight(pos.x,pos.y,pos.z,0xffdd00,18*Math.min(scale,4),80*Math.min(scale,4));
+  }
+  beep(120,0.4,'sawtooth',0.12); beep(80,0.5,'square',0.1,0.05);
+}
+function updateFX(dt){
+  for(const d of debris){
+    d.mesh.position.addScaledVector(d.v,dt); d.v.multiplyScalar(0.96);
+    d.mesh.rotation.x+=d.rx; d.mesh.rotation.y+=d.ry;
+    d.life-=dt*1.1; d.mesh.scale.setScalar(Math.max(0.01,d.life));
+    if(d.life<=0)freeMesh(d.mesh);
+  }
+  debris=debris.filter(d=>d.life>0);
+  // 白い煙の更新: 立ち昇りながら膨らんで薄れる
+  for(const sm of smokePuffs){
+    sm.mesh.position.addScaledVector(sm.v,dt); sm.v.multiplyScalar(0.95);
+    sm.life-=dt*0.7;
+    sm.mesh.scale.setScalar(Math.max(0.01,(1.4-sm.life)*sm.gr+0.4));   // だんだん膨張
+    sm.mesh.material.opacity=Math.max(0,Math.min(0.9,sm.life*1.1));    // しばらく濃く保ってから薄れる
+    if(sm.life<=0)freeMesh(sm.mesh);
+  }
+  smokePuffs=smokePuffs.filter(sm=>sm.life>0);
+  for(const f of fireballs){
+    if(f.delay>0){f.delay--; continue;}
+    f.t+=dt*1.8; f.mesh.scale.setScalar(Math.min(f.grow,f.t*f.grow*2.2));
+    const m=f.cluster?f.mesh.userData.fmat:f.mesh.material;
+    m.opacity=Math.max(0,0.95-f.t*0.95);
+    if(f.t>0.5)m.color.setHex(0xff0000);      // 時間とともに赤へ冷える
+    if(f.t>=1)freeMesh(f.mesh);
+  }
+  fireballs=fireballs.filter(f=>f.t<1);
+  for(const pl of LIGHT_POOL){ if(pl.intensity>0.04){ pl.intensity*=0.86; if(pl.intensity<0.04)pl.intensity=0; } }
+}
+
+// ============================================================
+// サウンド
+// ============================================================
+let actx=null;
+// スマホのバイブ(対応端末のみ。被弾・ゲームオーバー演出)
+function vibrate(pattern){ try{ if(navigator.vibrate)navigator.vibrate(pattern); }catch(e){} }
+function beep(freq,dur,type='square',vol=0.08,delay=0){
+  try{
+    if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.type=type;o.frequency.value=freq;o.connect(g);g.connect(actx.destination);
+    const t0=actx.currentTime+delay;
+    g.gain.setValueAtTime(vol,t0);g.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+    o.start(t0);o.stop(t0+dur);
+  }catch(e){}
+}
+// ノイズ(ザラついた音)。斬撃・被弾の「ズバッ」「打撃」用
+function noise(dur,vol=0.18,delay=0,lowpass=2000,sweep=true){
+  try{
+    if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();
+    const n=Math.floor(actx.sampleRate*dur);
+    const buf=actx.createBuffer(1,n,actx.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);   // 減衰ノイズ
+    const src=actx.createBufferSource(); src.buffer=buf;
+    const f=actx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=lowpass;
+    const g=actx.createGain();
+    const t0=actx.currentTime+delay;
+    g.gain.setValueAtTime(vol,t0); g.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+    if(sweep){ f.frequency.setValueAtTime(lowpass,t0); f.frequency.exponentialRampToValueAtTime(400,t0+dur); }
+    src.connect(f); f.connect(g); g.connect(actx.destination);
+    src.start(t0); src.stop(t0+dur);
+  }catch(e){}
+}
+// === 用途別の効果音(剣と敵弾で共通) ===
+// 受け/相打ち: ライトセーバーが交わるような「ビーン」と唸るノイズ混じりの音
+function sndClash(){
+  try{
+    if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();
+    const t0=actx.currentTime; const dur=0.528;
+    const out=actx.createGain();
+    out.gain.setValueAtTime(0.0001,t0);
+    out.gain.exponentialRampToValueAtTime(0.5,t0+0.012);   // 鋭い立ち上がり(交わる瞬間)
+    out.gain.exponentialRampToValueAtTime(0.001,t0+dur);   // ビーンと減衰
+    out.connect(actx.destination);
+    [{f:79.5,d:0.95},{f:83.2,d:-0.95},{f:158.9,d:0}].forEach(o=>{   // 近い低音が干渉して&quot;ビーン&quot;とうねる(半音上げ)
+      const osc=actx.createOscillator(); osc.type='sawtooth';
+      osc.frequency.setValueAtTime(o.f+o.d,t0); osc.frequency.exponentialRampToValueAtTime((o.f+o.d)*0.82,t0+dur);
+      const g=actx.createGain(); g.gain.value=0.5; osc.connect(g); g.connect(out);
+      osc.start(t0); osc.stop(t0+dur);
+      const osc2=actx.createOscillator(); osc2.type='sawtooth';   // 1オクターブ上を40%混ぜる
+      osc2.frequency.setValueAtTime((o.f+o.d)*2,t0); osc2.frequency.exponentialRampToValueAtTime((o.f+o.d)*2*0.82,t0+dur);
+      const g2=actx.createGain(); g2.gain.value=0.2; osc2.connect(g2); g2.connect(out);
+      osc2.start(t0); osc2.stop(t0+dur);
+    });
+    const n=Math.floor(actx.sampleRate*dur);
+    const buf=actx.createBuffer(1,n,actx.sampleRate); const d=buf.getChannelData(0);
+    for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,0.8);
+    const src=actx.createBufferSource(); src.buffer=buf;
+    const bp=actx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=900; bp.Q.value=0.5;
+    bp.frequency.setValueAtTime(741.6,t0); bp.frequency.exponentialRampToValueAtTime(264.9,t0+dur);
+    const ng=actx.createGain(); ng.gain.value=0.85;
+    src.connect(bp); bp.connect(ng); ng.connect(out);
+    src.start(t0); src.stop(t0+dur);
+  }catch(e){}
+}
+// 敵が斬られた/敵が被弾: ノイジーにズバッ(剣・敵弾共通)
+function sndEnemyHit(){
+  noise(0.18,0.16,0,2600); beep(330,0.1,'sawtooth',0.06); beep(165,0.14,'square',0.05,0.02);
+}
+// 自分が深く斬られた/深く被弾(クリティカル): ノイジーに長い打撃
+function sndSelfCrit(){
+  noise(0.4,0.24,0,1600); noise(0.3,0.16,0.05,800);
+  beep(120,0.4,'sawtooth',0.12); beep(80,0.5,'square',0.1,0.05);
+}
+// 自分が浅く被弾: 小爆発音(剣・敵弾共通)
+function sndSelfLight(){
+  noise(0.16,0.14,0,1800); beep(160,0.18,'sawtooth',0.08); beep(110,0.2,'square',0.06,0.03);
+}
+
+// ============================================================
+// ゲーム状態
+// ============================================================
+let playing=false, hp=50, score=0, wave=1, killCount=0;
+let selfX=0, selfY=0;                       // 3Dワールド上の自機位置(camX/Yから写像)
+let prevSelfX=0, prevSelfY=0;               // 前フレームの自機位置(高速移動時に敵編隊を引き連れる用)
+let camX=0, camY=0, camVX=0, camVY=0;       // 2D版cam.x/y/vx/vy をそのまま再現(画面px系)
+let recoil=0, shake=0, dmgFlash=0;
+let lowHpAlertT=0;   // HP残りわずかアラートのタイマー
+let overLockT=0;     // ゲームオーバー直後の誤入力ロック(連打で名前確定されるのを防ぐ)
+let psyFired=false, psyCleaned=false, psyCleanT=0;   // PSY: ビーム発射済み / 全命中後の一掃済み / 一掃時刻
+let playerSaber=null, shieldOn=false;        // 自機の剣振り中(アニメ用)/シールド中
+let swingCdL=0, swingCdR=0;                  // 左右それぞれの連打クールダウン(独立=左右交互も速い)
+let selfStaggerT=0;                          // 自機よろけ(敵に斬りを受けられた=連打が中断される)
+let pendingCleave=null;                       // 剣が振り切った時に出す斬撃エフェクトの予約
+let shHP=20, shBroken=false, shHitFx=0;       // シールド耐久(2D版shHP=12)/破壊フラグ/被弾エフェクト
+let clashFx=0, slashFx=0, slashSide=-1, hitstopT=0;  // CLASH演出/被斬演出/ヒットストップ
+let clashFreezeT=0, clashBounce=null;        // 相打ちの入力キャンセル時間・剣はじかれ演出
+let pendingSpawns=[], waveClearT=0;          // 予約スポーン(時間差出現)とウェーブ間隔タイマー
+// === サイコミュ(PSY)兵器 ===
+let psyCount=0;            // PSY在庫(最大3)
+let psyChargeT=0;          // FIRE長押しの計測(2秒で発動)
+let psyMode=0;             // 発動シーケンスの経過時間(>0で発動中)
+let psyUnits=[];           // 出現した白いサイコミュ2機
+let psyBeams=[];           // S字に飛ぶ大量のレーザービーム(マクロス風)
+let psyWaveClear=false;    // この発動でWAVEクリア確定フラグ
+let fireHeld=false;        // FIREボタン/キー押下中
+let saberHeldL=false, saberHeldR=false;   // 左右サーベル押下中(両方2秒同時押し=PSY発動トリガー)
+let psyHumT=0;             // PSYチャージ中のエネルギー上昇音タイマー
+const PSY_MAX=3;
+const SELF_SCALE=0.38;                       // 2D版cam座標(px) → 3Dワールド座標 の縮尺
+const DUEL_Z=-7;                             // チャンバラ時に敵が張り付く「目の前」のz位置
+const SBR_Z=-9;                              // 剣の射程: 目の前(melee張り付きz=-7)は斬れる/遠い突進敵は斬れない
+
+function resetGame(){
+  enemies.forEach(e=>freeGroup(e)); enemies=[];
+  beams.forEach(b=>freeMesh(b.mesh)); beams=[];
+  eshots.forEach(s=>freeMesh(s.mesh)); eshots=[];
+  debris.forEach(d=>freeMesh(d.mesh)); debris=[];
+  healBoxes.forEach(it=>freeGroup(it)); healBoxes=[]; nextHeal=2000; healFx=0;
+  smokePuffs.forEach(sm=>freeMesh(sm.mesh)); smokePuffs=[];
+  fireballs.forEach(f=>freeMesh(f.mesh)); fireballs=[];
+  for(const pl of LIGHT_POOL) pl.intensity=0;
+  hp=512; score=0; wave=0; killCount=0;     // ★試験用HP512(本番は50)
+  psyCount=3; psyChargeT=0; psyMode=0; psyWaveClear=false; fireHeld=false; psyFired=false; psyCleaned=false;  // ★試験用PSY3(本番は0)
+  { const ph0=document.getElementById('psyhud'); if(ph0)ph0.classList.remove('charging'); }
+  psyUnits.forEach(u=>freeGroup(u)); psyUnits=[];
+  psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
+  selfX=selfY=camX=camY=camVX=camVY=0; recoil=shake=dmgFlash=0; healFx=0; lowHpAlertT=0;
+  // 画面の赤い淵・低HP警告・回復フラッシュを確実に消す(素早い再開でも残らない)
+  ['dmg','lowhp','healfx'].forEach(id=>{ const el=document.getElementById(id); if(el)el.style.opacity=0; });
+  playerSaber=null; shieldOn=false; swingCdL=0; swingCdR=0; selfStaggerT=0; clashFx=slashFx=hitstopT=0; pendingCleave=null;
+  enemies.forEach(e=>{e.userData.waiting=false; e.visible=true;});
+  shHP=20; shBroken=false; shHitFx=0;          // シールド耐久リセット
+  pendingSpawns=[]; waveClearT=0; prevSelfX=selfX; prevSelfY=selfY;
+  updateHUD();
+}
+function startGame(){
+  resetGame();
+  playing=true;
+  document.body.classList.add('playing');           // 画面コントロールを表示
+  document.getElementById('title').classList.add('hidden');
+  document.getElementById('over').classList.add('hidden');
+  if(actx&amp;&amp;actx.state==='suspended')actx.resume();
+  vibrate(10);                       // ユーザー操作中に振動を有効化(プライミング)
+  startWave();                       // 最初の波を開始
+}
+// ハイスコアTop5(2D版踏襲。localStorage 'smb_hs' に名前+スコアの配列)
+function loadHS(){ try{ const d=JSON.parse(localStorage.getItem('smb_hs')||'[]'); if(Array.isArray(d))return d.slice(0,5); }catch(e){} return []; }
+function saveHS(list){ try{ if(list.length===0)localStorage.removeItem('smb_hs'); else localStorage.setItem('smb_hs',JSON.stringify(list)); }catch(e){} }
+function gameOver(){
+  playing=false;
+  document.body.classList.remove('playing');     // 画面コントロールを隠す(OK等が押せるように)
+  // PSY(サイコミュ)の状態と赤い点滅表示を完全にクリア
+  psyMode=0; psyChargeT=0; fireHeld=false; saberHeldL=false; saberHeldR=false;
+  psyUnits.forEach(u=>freeGroup(u)); psyUnits=[];
+  psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
+  const ph0=document.getElementById('psyhud'); if(ph0){ ph0.classList.remove('charging'); ph0.style.display='none'; }
+  vibrate([120,60,120,60,200]);                  // スマホ振動(ゲームオーバー)
+  // 自機の派手な最後の大爆発+強い画面揺れ
+  shake=30; dmgFlash=2.0;
+  const camDir=new THREE.Vector3(); camera.getWorldDirection(camDir);
+  const base=camera.position.clone().addScaledVector(camDir,6);
+  for(let k=0;k<6;k++){
+    const p=base.clone().add(new THREE.Vector3((Math.random()-0.5)*8,(Math.random()-0.5)*8,(Math.random()-0.5)*4));
+    explode(p,1.2+Math.random()*0.8,[0xff0000,0xff7a00,0xffff00,0xffffff,0xff3b00,0xff9500]);
+  }
+  noise(0.6,0.3,0,1500); beep(140,0.5,'sawtooth',0.14); beep(70,0.7,'square',0.1,0.1);
+  let hsList=loadHS();
+  const prevHi=hsList[0]?hsList[0].s:0;
+  const isNew=score>prevHi;
+  const rankIn = hsList.length<5 || score>(hsList[hsList.length-1]?.s||0);
+  const hi=Math.max(prevHi,score);
+  document.getElementById('finscore').textContent='SCORE '+score;
+  const hiEl=document.getElementById('finhi');
+  if(hiEl)hiEl.textContent=(isNew&amp;&amp;score>0?'NEW HIGH SCORE ':'HIGH SCORE ')+hi;
+  // ランクインしたら名前入力、しなければそのままランキング表示
+  if(rankIn &amp;&amp; score>0){
+    startNameEntry(hsList);
+  }else{
+    renderRank(hsList);
+    document.getElementById('nameentry').classList.add('hidden');
+    { const rb=document.getElementById('retrybtn'); if(rb)rb.classList.remove('locked'); }   // 名前入力なし=リトライ可
+  }
+  document.getElementById('over').classList.remove('hidden');
+  overLockT=performance.now()+800;     // 0.8秒は連打による名前確定・再開を無効化
+}
+// ランキング表示
+function renderRank(hsList){
+  const rk=document.getElementById('finrank');
+  if(rk){
+    let html='';
+    for(let i=0;i<5;i++){ const e=hsList[i]; html+='<div>'+(i+1)+'. '+(e?(e.n+' '+e.s):'---')+'</div>'; }
+    rk.innerHTML=html;
+  }
+}
+// 名前入力(2D版移植: 7文字、各桁を上下で選び左右で移動、OKで確定)
+const NM_CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -.!';
+let nmArr=['A','A','A','A','A','A','A'], nmIdx=0, nmPendingList=null;
+function startNameEntry(hsList){
+  nmArr=['A','A','A','A','A','A','A']; nmIdx=0; nmPendingList=hsList;
+  { const rb=document.getElementById('retrybtn'); if(rb)rb.classList.add('locked'); }   // 名前確定までリトライ不可
+  document.getElementById('nameentry').classList.remove('hidden');
+  const nc=document.getElementById('nmcontrols'); if(nc)nc.style.display='';   // 入力UIを再表示
+  document.getElementById('finrank').innerHTML='';
+  renderNameChars();
+}
+function renderNameChars(){
+  const c=document.getElementById('namechars'); if(!c)return;
+  let html='';
+  for(let i=0;i<7;i++){
+    const sel=i===nmIdx;
+    html+='<span class=&quot;nmcell'+(sel?' nmsel':'')+'&quot; data-i=&quot;'+i+'&quot; style=&quot;font-family:\'Press Start 2P\',monospace;font-size:1.1rem;'+
+      'min-width:20px;text-align:center;cursor:pointer;border-bottom:3px solid '+(sel?'#ffd60a':'transparent')+';padding-bottom:3px;color:'+(sel?'#ffd60a':'#fff')+'&quot;>'+
+      (nmArr[i]===' '?'_':nmArr[i])+'</span>';
+  }
+  c.innerHTML=html;
+}
+function nmShift(i,d){
+  const cur=NM_CHARS.indexOf(nmArr[i]);
+  nmArr[i]=NM_CHARS[(cur+d+NM_CHARS.length)%NM_CHARS.length];
+  beep(880,0.02,'square',0.05); renderNameChars();
+}
+function nmConfirm(){
+  if(performance.now()<overLockT)return;   // ゲームオーバー直後の連打では確定しない
+  if(!nmPendingList)return;
+  const name=nmArr.join('').replace(/ +$/,'')||'YOU';   // 末尾スペース除去
+  nmPendingList.push({n:name,s:score});
+  nmPendingList.sort((a,b)=>b.s-a.s);
+  nmPendingList=nmPendingList.slice(0,5);
+  saveHS(nmPendingList);
+  renderRank(nmPendingList);
+  document.getElementById('nameentry').classList.add('hidden');
+  const nc=document.getElementById('nmcontrols'); if(nc)nc.style.display='none';   // 入力UIを消す
+  beep(1046,0.08,'square',0.07); beep(1568,0.1,'square',0.06,0.05);
+  { const rb=document.getElementById('retrybtn'); if(rb)rb.classList.remove('locked'); }   // 確定後はリトライ可
+  nmPendingList=null;
+}
+
+function updateHUD(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('wave').textContent='WAVE '+wave;
+  let bar='';
+  const low=hp<=10;
+  for(let i=0;i<50;i++)bar+='<i class=&quot;'+(i<hp?(low?'lowhpseg':''):'off')+'&quot;></i>';
+  document.getElementById('hpbar').innerHTML=bar;
+  // PSY在庫表示(右上・赤点滅)
+  const ph=document.getElementById('psyhud'), pd=document.getElementById('psydots');
+  if(ph&amp;&amp;pd){
+    if(psyCount>0){ ph.style.display='block'; let d=''; for(let i=0;i<psyCount;i++)d+='<b></b>'; pd.innerHTML=d; }
+    else ph.style.display='none';
+  }
+}
+
+// ============================================================
+// 入力
+// ============================================================
+// === 2D版と同じ操作系: 方向パッド+アクションボタン。慣性移動 ===
+// 画面全体のタッチスクロール/ズーム/プルダウン更新を完全に防止
+addEventListener('touchmove',e=>{e.preventDefault();},{passive:false});
+addEventListener('gesturestart',e=>{e.preventDefault();});
+document.addEventListener('dblclick',e=>{e.preventDefault();});
+const keys={};
+const keyHold={L:0,R:0,U:0,D:0};   // 各方向キーの押下継続フレーム(微調整用)
+function press(k,d){
+  keys[k]=d;
+  // 相打ちフリーズ中は攻撃入力(剣・ビーム)だけキャンセル。移動はできる
+  if(clashFreezeT>0 &amp;&amp; (k==='x'||k==='sbrL'||k==='sbrR'))return;
+  if(d&amp;&amp;k==='x'){ fireBeam(); }                     // Xは常にビーム発射(PSYと無関係=連打しても誤発動しない)
+  if(d&amp;&amp;k==='sbrL'){ saberHeldL=true; swing(-1); }
+  if(!d&amp;&amp;k==='sbrL'){ saberHeldL=false; }
+  if(d&amp;&amp;k==='sbrR'){ saberHeldR=true; swing(1); }
+  if(!d&amp;&amp;k==='sbrR'){ saberHeldR=false; }
+  if(k==='shld')shieldOn=d&amp;&amp;!shBroken;   // 押している間シールドON(壊れていなければ)
+}
+// キーボード(PC)
+// 2D版と同じPCキー割り当て: 矢印=移動 / X=ビーム / Z=左剣 / C=右剣 / S=シールド
+function mapKey(e){
+  const k=e.key;
+  if(k==='ArrowLeft')return 'L';
+  if(k==='ArrowRight')return 'R';
+  if(k==='ArrowUp')return 'U';
+  if(k==='ArrowDown')return 'D';
+  if(k==='x'||k==='X')return 'x';
+  if(k==='z'||k==='Z')return 'sbrL';
+  if(k==='c'||k==='C')return 'sbrR';
+  if(k==='s'||k==='S')return 'shld';
+  return null;
+}
+addEventListener('keydown',e=>{
+  const k=mapKey(e);
+  if(k){e.preventDefault(); if(!keys[k])press(k,true);}
+});
+addEventListener('keyup',e=>{
+  const k=mapKey(e);
+  if(k)press(k,false);
+});
+// フォーカス喪失/タブ非表示でFIRE押下状態をリセット(keyup取りこぼしによるPSY誤発動を防ぐ)
+function clearFireState(){ keys['x']=false; fireHeld=false; saberHeldL=false; saberHeldR=false; keys['sbrL']=false; keys['sbrR']=false; if(psyMode<=0)psyChargeT=0;
+  const ph=document.getElementById('psyhud'); if(ph)ph.classList.remove('charging'); }
+addEventListener('blur', clearFireState);
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden)clearFireState(); });
+// タッチ/マウス(画面ボタン)
+// クリックでビーム(ドラッグと区別: 短いタップ/クリック)
+let downT=0,downX=0,downY=0;
+renderer.domElement.addEventListener('pointerdown',e=>{downT=performance.now();downX=e.clientX;downY=e.clientY;});
+renderer.domElement.addEventListener('pointerup',e=>{
+  const dt=performance.now()-downT, dist=Math.hypot(e.clientX-downX,e.clientY-downY);
+  if(dt<250&amp;&amp;dist<10&amp;&amp;playing)fireBeam();
+});
+// 方向パッド(円形・指の位置で8方向。単一指で斜めも拾う)
+(function(){
+  const pad=document.getElementById('dpad'), stick=document.getElementById('dstick');
+  if(!pad)return;
+  let active=false, pid=null;
+  function setDir(cx,cy,px,py){
+    const dx=px-cx, dy=py-cy;
+    const r=pad.clientWidth/2;
+    const dead=r*0.15;                          // 中心の不感帯(小さめ=素早く反応)
+    const len=Math.hypot(dx,dy);
+    // スティック表示(掴んだ方向へ寄せる)
+    const cl=Math.min(len,r);
+    const ang=Math.atan2(dy,dx);
+    stick.style.transform='translate('+(Math.cos(ang)*cl)+'px,'+(Math.sin(ang)*cl)+'px)';
+    // 全方向クリア
+    keys['L']=keys['R']=keys['U']=keys['D']=false;
+    if(len<dead)return;                          // 中心付近は移動なし
+    // 8方向: x/y成分が一定以上なら各方向ON(斜めは2方向同時ON)
+    const th=0.46;                               // 斜め判定のしきい(高め=上下左右が安定して出る)
+    const nx=dx/len, ny=dy/len;
+    if(nx<-th)keys['L']=true;
+    if(nx> th)keys['R']=true;
+    if(ny<-th)keys['U']=true;                    // 画面上=U
+    if(ny> th)keys['D']=true;
+  }
+  function rectCenter(){const b=pad.getBoundingClientRect();return{cx:b.left+b.width/2,cy:b.top+b.height/2};}
+  pad.addEventListener('pointerdown',e=>{e.preventDefault();active=true;pid=e.pointerId;pad.setPointerCapture(e.pointerId);const c=rectCenter();setDir(c.cx,c.cy,e.clientX,e.clientY);});
+  pad.addEventListener('pointermove',e=>{if(!active||e.pointerId!==pid)return;e.preventDefault();const c=rectCenter();setDir(c.cx,c.cy,e.clientX,e.clientY);});
+  function release(e){if(e.pointerId!==pid)return;active=false;pid=null;keys['L']=keys['R']=keys['U']=keys['D']=false;stick.style.transform='translate(0,0)';camVX*=0.28;camVY*=0.28;}  // 離した瞬間に慣性を落として狙いやすく
+  pad.addEventListener('pointerup',release);
+  pad.addEventListener('pointercancel',release);
+})();
+(function(){
+  const fb=document.getElementById('firebtn');
+  fb.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();fireBeam();});  // FIREは常にビーム発射
+})();
+function releaseFire(){ fireHeld=false; }   // (旧FIRE長押し用・現在は未使用の保険)
+// 剣ボタン: 押した瞬間に振る + 押下状態を保持(左右同時押し2秒=PSY発動)
+(function(){
+  const bl=document.getElementById('sbrLbtn'), br=document.getElementById('sbrRbtn');
+  bl.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();saberHeldL=true;swing(-1);});
+  bl.addEventListener('pointerup',e=>{e.preventDefault();e.stopPropagation();saberHeldL=false;});
+  bl.addEventListener('pointerleave',()=>{saberHeldL=false;});
+  bl.addEventListener('pointercancel',()=>{saberHeldL=false;});
+  br.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();saberHeldR=true;swing(1);});
+  br.addEventListener('pointerup',e=>{e.preventDefault();e.stopPropagation();saberHeldR=false;});
+  br.addEventListener('pointerleave',()=>{saberHeldR=false;});
+  br.addEventListener('pointercancel',()=>{saberHeldR=false;});
+})();
+(function(){
+  const sh=document.getElementById('shldbtn');
+  sh.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();shieldOn=!shBroken;});
+  sh.addEventListener('pointerup',e=>{e.preventDefault();e.stopPropagation();shieldOn=false;});
+  sh.addEventListener('pointerleave',()=>{shieldOn=false;});
+  sh.addEventListener('pointercancel',()=>{shieldOn=false;});
+})();
+document.getElementById('startbtn').addEventListener('click',startGame);
+// 親サイト(ブリーフィング)から開かれた初回は二度押し不要=自動スタート
+addEventListener('message',function(ev){
+  if(ev.data==='autostart'||(ev.data&amp;&amp;ev.data.type==='autostart')){
+    const t=document.getElementById('title');
+    if(t &amp;&amp; !t.classList.contains('hidden')) startGame();   // タイトル表示中のみ(RETRYには干渉しない)
+  }
+});
+document.getElementById('retrybtn').addEventListener('click',()=>{ if(performance.now()<overLockT)return; if(nmPendingList)return; startGame(); });   // 名前確定(OK)前はリトライ無効
+// 名前入力: ▲▼タップで文字選択、桁タップで選択桁移動、OKで確定
+document.getElementById('namechars').addEventListener('click',e=>{
+  const cell=e.target.closest('.nmcell'); if(!cell)return;
+  const i=+cell.dataset.i;
+  if(i===nmIdx) nmShift(nmIdx,1);          // 選択中の桁を再タップ=文字送り
+  else { nmIdx=i; renderNameChars(); }     // 別の桁をタップ=その桁を選択
+});
+document.getElementById('nameok').addEventListener('click',nmConfirm);
+// スマホ用の専用操作ボタン(タップだけで入力できる)
+document.getElementById('nmup').addEventListener('click',e=>{ e.preventDefault(); nmShift(nmIdx,1); });
+document.getElementById('nmdown').addEventListener('click',e=>{ e.preventDefault(); nmShift(nmIdx,-1); });
+document.getElementById('nmleft').addEventListener('click',e=>{ e.preventDefault(); nmIdx=Math.max(0,nmIdx-1); beep(660,0.02,'square',0.05); renderNameChars(); });
+document.getElementById('nmright').addEventListener('click',e=>{ e.preventDefault(); nmIdx=Math.min(6,nmIdx+1); beep(660,0.02,'square',0.05); renderNameChars(); });
+// ソフトキーボード入力は ⌨ ボタンを押したときだけ(文字行タップとは競合させない)
+(function(){
+  const inp=document.getElementById('nameinput'), typeBtn=document.getElementById('nametype');
+  function openKbd(){ if(inp){ inp.value=nmArr.join('').replace(/_/g,' ').trimEnd(); inp.focus(); } }
+  if(typeBtn)typeBtn.addEventListener('click',e=>{ e.preventDefault(); openKbd(); });
+  if(inp){
+    inp.addEventListener('input',()=>{
+      let v=inp.value.toUpperCase().replace(/[^A-Z0-9.\- ]/g,'').slice(0,7);
+      for(let i=0;i<7;i++)nmArr[i]=v[i]||' ';
+      nmIdx=Math.min(6,Math.max(0,v.length));
+      renderNameChars();
+    });
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ inp.blur(); nmConfirm(); } });
+  }
+})();
+// キーボードで名前入力(2D版踏襲: 直接タイプ可。↑↓=文字, ←→=桁, Enter/X=次/確定, BS=戻る)
+window.addEventListener('keydown',e=>{
+  if(document.getElementById('nameentry').classList.contains('hidden'))return;
+  if(performance.now()<overLockT)return;   // ゲームオーバー直後の連打は無視
+  const k=e.key;
+  if(k==='ArrowUp'){ nmShift(nmIdx,1); e.preventDefault(); }
+  else if(k==='ArrowDown'){ nmShift(nmIdx,-1); e.preventDefault(); }
+  else if(k==='ArrowLeft'){ nmIdx=Math.max(0,nmIdx-1); beep(660,0.02,'square',0.05); renderNameChars(); e.preventDefault(); }
+  else if(k==='ArrowRight'){ nmIdx=Math.min(6,nmIdx+1); beep(660,0.02,'square',0.05); renderNameChars(); e.preventDefault(); }
+  else if(k==='Backspace'){ nmIdx=Math.max(0,nmIdx-1); beep(440,0.02,'square',0.05); renderNameChars(); e.preventDefault(); }
+  else if(k==='Enter'){ nmConfirm(); e.preventDefault(); }   // Enterはどの桁でも即確定
+  else if(/^[a-zA-Z0-9.\-]$/.test(k)){ nmArr[nmIdx]=k.toUpperCase(); nmIdx=Math.min(6,nmIdx+1); beep(1046,0.02,'square',0.05); renderNameChars(); e.preventDefault(); }
+});
+
+// ============================================================
+// 当たり判定ヘルパ: ビームが敵に当たったか(画面上の近さ+距離)
+// ============================================================
+const tmpV=new THREE.Vector3();
+function enemyScreenPos(e){
+  tmpV.copy(e.position); tmpV.project(camera);
+  return {x:tmpV.x,y:tmpV.y,z:tmpV.z};
+}
+
+// ============================================================
+// サイコミュ(PSY)発動シーケンス
+// ============================================================
+function spawnPsyUnits(){
+  const fwd=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+  const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
+  const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
+  for(let s=0;s<2;s++){
+    const side=(s===0)?-1:1;
+    const u=buildPsyUnit();
+    const base=camera.position.clone()
+      .add(fwd.clone().multiplyScalar(20))
+      .add(up.clone().multiplyScalar(7))
+      .add(right.clone().multiplyScalar(side*11));
+    u.position.copy(base);
+    u.quaternion.copy(camera.quaternion);            // カメラと同じ向き(前方を向く)
+    u.userData.side=side; u.userData.beam=null;
+    scene.add(u); psyUnits.push(u);
+  }
+  // 出現音
+  beep(1400,0.12,'square',0.09); beep(1900,0.14,'square',0.07,0.06);
+}
+// 左右のサイコミュが敵を右左右左と交互に狙い撃ち(先端1か所から前方へ長い黄レーザー)
+function psyFireBeams(){
+  psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
+  const units=psyUnits.slice();
+  if(units.length===0)return;
+  const list=enemies.slice();
+  list.forEach((e,idx)=>{
+    const u=units[idx % units.length];                     // 敵ごとに右左交互
+    const m=grp(0,0,0);
+    // 先端から前方へ伸びる長レーザー(z=0が先端、前方へL。後ろには出さない)
+    const L=220;
+    vox(m,0,0,L/2,0.3,0.3,L,PAL.yellow,PAL.yellow);        // 黄の芯(細い・太さ60%)
+    vox(m,0,0,L/2,0.6,0.6,L,PAL.yellow,PAL.yellow);        // 黄の光彩
+    scene.add(m);
+    psyBeams.push({mesh:m, unit:u, target:e, hit:false, delay:idx*0.006});  // ほぼ同時発射(敵の数=ビーム数)
+  });
+  // 発射音(ロックオン一斉射撃)
+  beep(880,0.06,'square',0.09); beep(1320,0.06,'square',0.08,0.04);
+  beep(300,0.4,'sawtooth',0.13); noise(0.45,0.22,0,3400);
+}
+// ロックオンビーム: サイコミュ先端→敵へ前方へレーザーを伸ばし、到達した敵を即爆発。着弾後はビームを消す
+function updatePsyBeams(dt){
+  const t=psyMode-0.5;                                    // 発射からの経過
+  const camFwd=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+  for(const b of psyBeams){
+    if(!b.mesh || b.hit)continue;                         // 着弾済みのビームは消えている
+    if(t<b.delay){ b.mesh.visible=false; continue; }      // 時間差発射
+    const tgt=b.target;
+    // 狙い先の敵が既に消えていたら、このビームは撃たずに消す(何もない方向を指さない)
+    if(!tgt || tgt.userData.state==='dying'){ freeGroup(b.mesh); b.mesh=null; b.hit=true; continue; }
+    b.mesh.visible=true;
+    const tip=b.unit.position.clone().add(camFwd.clone().multiplyScalar(3.2));  // 機体前面の先端
+    const aim=tgt.position.clone();
+    // 先端を起点に、敵方向へ向ける(後ろには伸ばさない)
+    b.mesh.position.copy(tip);
+    b.mesh.lookAt(aim);
+    const fl=0.8+Math.abs(Math.sin(psyMode*40))*0.2;      // 明滅
+    b.mesh.scale.set(fl,fl,1);
+    // 着弾(発射からごく短時間で命中)=即爆発し、ビームを消す
+    if(t>=b.delay+0.32){
+      const u=tgt.userData;
+      u.psyKilled=true; u.hp=0; u.state='dying'; u.stateT=0; u.exploded=false;  // 通常撃破と同じ個別爆発
+      const pts=(u.kind==='fighter')?80:(u.kind==='nemesis')?3000:(u.kind==='ship')?2000:(u.heavy?200:100);
+      score+=pts; killCount++;
+      beep(180,0.16,'sawtooth',0.09); noise(0.2,0.14,0,1800);
+      updateHUD();
+      freeGroup(b.mesh); b.mesh=null; b.hit=true;          // 着弾したビームは消す(残留なし)
+    }
+  }
+  psyBeams=psyBeams.filter(b=>!b.hit);                     // 着弾済みを配列から除去
+}
+function psyDestroyAll(){
+  // 走査が届かなかった取りこぼしだけを撃破(dying中の敵は個別爆発を継続させる)
+  for(const e of enemies){
+    const u=e.userData;
+    if(u.state==='dying')continue;                 // 既に爆発中はそのまま
+    u.psyKilled=true; u.hp=0; u.state='dying'; u.stateT=0; u.exploded=false;
+    score+=(u.kind==='fighter')?80:(u.kind==='nemesis')?3000:(u.kind==='ship')?2000:(u.heavy?200:100); killCount++;
+  }
+  pendingSpawns=[];            // 湧く前の敵は加算しないがWAVEはクリア
+  psyWaveClear=true;
+  updateHUD();
+}
+function psyActive(){ return psyMode>0; }   // 発動中=無敵・敵停止
+function updatePsy(dt){
+  const ph=document.getElementById('psyhud');
+  if(psyMode<=0){
+    // 長押し計測(発動前)
+    if(saberHeldL &amp;&amp; saberHeldR &amp;&amp; psyCount>0){
+      psyChargeT+=dt;
+      if(ph)ph.classList.add('charging');
+      // 0.7秒以上長押しでエネルギーが高まる音(チャージが進むほど高く・速く)
+      if(psyChargeT>=0.7){
+        psyHumT-=dt;
+        if(psyHumT<=0){
+          const prog=Math.min(1,(psyChargeT-0.7)/(2.0-0.7));   // 0.7→2.0で0→1
+          const freq=440+prog*1400;                            // 上昇する基音
+          beep(freq,0.1,'sawtooth',0.05+prog*0.04);
+          beep(freq*1.5,0.08,'square',0.03+prog*0.03,0.02);
+          psyHumT=0.13-prog*0.06;                              // 進むほど間隔が詰まる
+        }
+      }
+      if(psyChargeT>=2.0){                          // 左右サーベル2秒同時押しで発動(PC/スマホ共通)
+        psyMode=0.0001; psyChargeT=0; psyHumT=0;       // 長押し完了で確定フェーズ突入
+        psyFired=false; psyCleaned=false;              // 発射・一掃フラグ初期化
+        if(ph)ph.classList.remove('charging');
+        eshots.forEach(s=>freeMesh(s.mesh)); eshots=[]; // 敵弾すべて撤去
+        pendingSpawns=[];                              // 発生待ちの敵は即キャンセル(発動後に湧いて取り残されるのを防ぐ)
+        enemies.forEach(e=>{ e.userData.psyKilled=false; if(e.userData.waiting){ e.userData.waiting=false; e.visible=true; e.userData.state='approach'; } });  // 待機中もPSY対象にする
+        spawnPsyUnits();
+        showFloatText('PSYCO MU - LAUNCH',PAL.cyan);
+      }
+    }else{ psyChargeT=0; psyHumT=0; if(ph)ph.classList.remove('charging'); }
+    return;
+  }
+  // 発動中: 敵弾は常に消す・敵停止・無敵
+  if(eshots.length){ eshots.forEach(s=>freeMesh(s.mesh)); eshots=[]; }
+  const prev=psyMode; psyMode+=dt;
+  psyUnits.forEach((u,i)=>{
+    u.rotation.z=Math.sin(psyMode*4+i)*0.08;
+    const P=u.userData.P;
+    if(P&amp;&amp;P.core)P.core.material.emissiveIntensity=0.7+Math.abs(Math.sin(psyMode*9))*0.9;
+    if(P&amp;&amp;P.muzzle)P.muzzle.material.emissiveIntensity=(psyMode<0.5)?(0.5+psyMode*3):2.5;
+    // 全ビーム命中後(離脱フェーズ)は壊さず後方へ飛び下がる
+    if(psyCleaned){
+      const back=new THREE.Vector3(0,0,1).applyQuaternion(camera.quaternion);  // カメラ後方(手前)
+      u.position.addScaledVector(back,(psyMode-psyCleanT)*160*dt);              // 後方へ加速して飛び下がる
+    }
+  });
+  // 0.5秒後にレーザーを発射(全敵にロックオン)。一度だけ
+  if(prev<0.5 &amp;&amp; psyMode>=0.5){
+    psyFireBeams();
+    psyFired=true; psyCleaned=false;
+    psyCount=Math.max(0,psyCount-1);                   // PSY1個消費
+    showFloatText('PSYCO ANNIHILATION!',PAL.yellow);
+    updateHUD();
+    shake=10;
+  }
+  // レーザー束の更新(全敵へ順次着弾・撃破)
+  if(psyMode>=0.5){ updatePsyBeams(dt); }
+  // 全ビームが命中し終わってから取りこぼしを一掃＋WAVEクリア確定(敵を必ずビームで倒す)
+  if(psyFired &amp;&amp; !psyCleaned &amp;&amp; psyBeams.length===0){
+    psyDestroyAll();
+    psyCleaned=true; psyCleanT=psyMode;
+  }
+  // 一掃後はビームをフェードアウト(残っていれば)
+  if(psyCleaned){
+    psyBeams.forEach(b=>{ if(b.mesh){ b.mesh.scale.multiplyScalar(0.82); } });
+  }
+  // 終了(一掃から0.45秒後)で片付け(サイコミュは後方へ飛び下がったあと撤収)
+  if(psyCleaned &amp;&amp; psyMode>=psyCleanT+0.45){
+    psyUnits.forEach(u=>freeGroup(u)); psyUnits=[];
+    psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
+    for(const e of enemies){ const u=e.userData; if(u.state!=='dying'){ u.waiting=false; e.visible=true; u.psyKilled=true; u.hp=0; u.state='dying'; u.stateT=0; u.exploded=false; } }  // 最終一掃(PSY免れ防止の保険)
+    pendingSpawns=[];
+    psyFired=false; psyCleaned=false;
+    psyMode=0;
+  }
+}
+
+// ============================================================
+// メインループ
+// ============================================================
+let last=performance.now();
+function loop(){
+  requestAnimationFrame(loop);
+  const now=performance.now(); let dt=(now-last)/1000; last=now;
+  if(dt>0.05)dt=0.05;
+  const t=now/1000;
+
+  // 自機の慣性移動: 2D版ベース + 押し始めは微調整(ゆっくり)、長押しで素早く
+  {
+    const maxV=4.6, fric=0.62;                       // 移動は速く(MSに追いつく)・止め際はピタッと(摩擦UP)
+    // 各キーの押下継続フレームを計測
+    keyHold.L=keys['L']?keyHold.L+1:0;
+    keyHold.R=keys['R']?keyHold.R+1:0;
+    keyHold.U=keys['U']?keyHold.U+1:0;
+    keyHold.D=keys['D']?keyHold.D+1:0;
+    // 押し始めから素早く加速(微調整用の溜めを短く)
+    const acc=h=>0.66*(h<=8?0.45+0.55*(h/8):1);      // 速く立ち上がる
+    if(keys['L'])camVX-=acc(keyHold.L);
+    if(keys['R'])camVX+=acc(keyHold.R);
+    if(keys['U'])camVY-=acc(keyHold.U);
+    if(keys['D'])camVY+=acc(keyHold.D);
+    camVX=Math.max(-maxV,Math.min(maxV,camVX))*fric;
+    camVY=Math.max(-maxV,Math.min(maxV,camVY))*fric;
+    if(Math.abs(camVX)<0.08)camVX=0;
+    if(Math.abs(camVY)<0.08)camVY=0;
+    camX+=camVX; camY+=camVY;        // 毎フレーム加算(移動制限なし=宇宙に境界なし)
+    selfX=camX*SELF_SCALE;
+    selfY=-camY*SELF_SCALE;
+  }
+  recoil*=0.8; shake*=0.85;
+  if(swingCdL>0)swingCdL-=dt; if(swingCdR>0)swingCdR-=dt;   // 剣クールダウン減算
+  if(selfStaggerT>0)selfStaggerT-=dt;                       // 自機よろけ減算
+  // 剣のはじかれ演出(相打ち): 中央で剣が弾き返され、震えながら外へ戻る(逆再生風)
+  if(clashBounce){
+    clashBounce.t+=dt;
+    const bp=Math.min(1,clashBounce.t/0.6);    // 0.6秒
+    const bd=clashBounce.dir;
+    pSaber.visible=true;
+    // 中央でぶつかった位置から、震えながら外側へ弾き返される
+    const shake2=Math.sin(clashBounce.t*50)*Math.exp(-clashBounce.t*4)*0.4;
+    const outX=bd*(1.3+bp*7.0);                // 中央近く→外側へ戻る(逆再生)
+    pSaber.position.set(outX, -4.0+shake2*3, -8);
+    const zang=(-bd*0.3)+(bd*2.2)*bp+shake2;   // 中央向き→外向きへ戻る
+    pSaber.rotation.set(-2.7, 0, zang);
+    if(pBlade.children[1])pBlade.children[1].material.emissiveIntensity=2.5+shake2*4;
+    if(clashBounce.t>0.6){ clashBounce=null; playerSaber=null; pSaber.visible=false; }
+  }
+  // 剣振りの更新(一定時間で振り終わる)
+  else if(playerSaber){
+    playerSaber.t+=dt;
+    const p=Math.min(1,playerSaber.t/0.14);    // 振り抜きの時間(短縮=連打反応UP)
+    const dir=playerSaber.dir;                 // -1=左, +1=右
+    pSaber.visible=true;
+    // 画面の端から中央照準まで、刃先が大きく弧を描いて回り込む(爽快な薙ぎ)
+    // 振り始め: 画面の外側端 → 振り終わり: 中央(照準)
+    const ease=Math.sin(p*Math.PI/2);          // 加速して振り抜く
+    // 根本も外端→中央へ移動し、刃先が大きく回る
+    const baseX=dir*9.0*(1-ease*0.85);         // 外端(±9)から中央近く(±1.3)へ
+    pSaber.position.set(baseX, -6.5+ease*2.5, -8);
+    // 刃の角度: 外側に大きく倒した(ほぼ水平=横)状態から、中央で立てる(前)
+    const zFrom=dir*1.9;                        // 振り始め: 外へ大きく倒す(横向き)
+    const zTo  =-dir*0.3;                       // 振り終わり: 中央を超えて振り抜く
+    const z=zFrom+(zTo-zFrom)*ease;
+    const xRot=-2.7+Math.sin(p*Math.PI)*0.7;
+    pSaber.rotation.set(xRot, 0, z);
+    if(pBlade.children[1])pBlade.children[1].material.emissiveIntensity=1.5+Math.sin(p*Math.PI)*2.0;
+    if(playerSaber.t>0.14){
+      playerSaber=null; pSaber.visible=false;
+      if(pendingCleave){ slashCleave(pendingCleave.pos); pendingCleave=null; }  // 振り切った瞬間に斬撃
+    }
+  }else{
+    pSaber.visible=false;
+  }
+  // シールド表示(構えている間、画面手前に盾。被弾で光る)
+  if(shieldOn &amp;&amp; !shBroken){
+    pShield.visible=true;
+    const wob=Math.sin(now*0.006)*0.05;
+    pShield.position.set(0,-1.5,-7);
+    pShield.rotation.set(wob,0,wob*0.5);
+    if(pShield.children[1]) pShield.children[1].material.emissiveIntensity=0.8+shHitFx*3;
+    if(shHitFx>0)shHitFx-=dt*3;
+    // 2D版風オーバーレイ(赤枠+SHIELD+12セグメント)を表示・更新
+    const ov=document.getElementById('shieldoverlay');
+    if(ov){
+      if(!ov.classList.contains('on'))ov.classList.add('on');
+      const mt=document.getElementById('shieldmeter');
+      if(mt &amp;&amp; mt.childElementCount!==20){
+        let s=''; for(let i=0;i<20;i++)s+='<i></i>'; mt.innerHTML=s;
+      }
+      if(mt){ for(let i=0;i<20;i++)mt.children[i].className=(i<shHP?'':'off'); }
+    }
+  }else{
+    pShield.visible=false;
+    const ov=document.getElementById('shieldoverlay');
+    if(ov&amp;&amp;ov.classList.contains('on'))ov.classList.remove('on');
+  }
+  // チャンバラ演出の減衰
+  if(clashFx>0)clashFx-=dt*2.5;
+  if(slashFx>0)slashFx-=dt*2.0;
+  if(hitstopT>0)hitstopT-=dt;
+  if(clashFreezeT>0)clashFreezeT-=dt;          // 相打ち入力キャンセル時間
+  const sx=(Math.random()-0.5)*shake*0.5, sy=(Math.random()-0.5)*shake*0.5;
+  camera.rotation.set(0,0,0);                          // 常に正面(-z方向)を向く(視線は平行)
+  camera.position.set(selfX+sx, selfY+sy, recoil*1.5); // 自機位置=スライド。発射反動で軽く後退
+  if(starField){
+    // === 2D版の背景を移植 ===
+    // (1) 常時ワープ前進感: 星が手前(+z方向)へ流れ、カメラを通り過ぎたら奥へ再配置
+    // (2) 矢印移動への視差連動: 自機(camera)が動くと星がゆっくり逆へ流れる(部分追従0.4倍)
+    // === カメラ相対の星空(メッシュがカメラに追従。星は箱±700で巻き戻し=常に全画面に星) ===
+    const pos=starField.geometry.attributes.position;
+    const arr=pos.array;
+    const W=700, BOX=1400;
+    const warp=160*dt;
+    const FLOW=5.2;
+    const dcx=(selfX-prevSelfX)*FLOW, dcy=(selfY-prevSelfY)*FLOW;
+    prevSelfX=selfX; prevSelfY=selfY;
+    for(let i=0;i<arr.length;i+=3){
+      arr[i+2]+=warp;
+      arr[i]  -=dcx;
+      arr[i+1]+=dcy;
+      if(arr[i+2] > -40){
+        arr[i+2]-=900;
+        arr[i]  =(Math.random()-0.5)*BOX;
+        arr[i+1]=(Math.random()-0.5)*BOX;
+      }
+      if(arr[i]   >  W) arr[i]  -=BOX; else if(arr[i]   < -W) arr[i]  +=BOX;
+      if(arr[i+1] >  W) arr[i+1]-=BOX; else if(arr[i+1] < -W) arr[i+1]+=BOX;
+    }
+    pos.needsUpdate=true;
+    starField.position.set(camera.position.x, camera.position.y, camera.position.z)
+  }
+
+  if(playing){
+    updatePsy(dt);                                     // サイコミュ(PSY)の計測・発動
+    // 2000点ごとに補給ボックス出現(PSY発動中は出さず、終了後に1個だけ出る)
+    if(score>=nextHeal &amp;&amp; !psyActive()){
+      spawnHealBox();
+      nextHeal=(Math.floor(score/2000)+1)*2000;       // 次の2000刻みへ飛ばす(一度に複数出さない)
+    }
+    // 回復ボックスの更新: 奥から手前へまっすぐ流れる。撃つ or 接触で回復
+    for(const it of healBoxes){
+      const u=it.userData;
+      it.position.z+=24*dt;                              // 手前へ流れる(自機追尾はしない)
+      u.spin+=dt*2; it.rotation.y=u.spin;
+      let got=false;
+      // (1) 照準が補給ボックスに重なって獲得。銃は遠距離OK、刀は近距離のみ(近接武器なので)
+      const sp=enemyScreenPos(it);
+      if(sp.z<1 &amp;&amp; it.position.z>-90 &amp;&amp; it.position.z<10){
+        const grab=5.5/Math.max(8,it.position.distanceTo(camera.position));
+        const aimed=Math.abs(sp.x)<grab &amp;&amp; Math.abs(sp.y)<grab;
+        const byBeam=beams.length>0;                     // 銃撃は遠くてもOK
+        const bySaber=playerSaber &amp;&amp; it.position.z>-12;  // 刀は目の前に来た時だけ(近接)
+        if(aimed &amp;&amp; (byBeam || bySaber)) got=true;
+      }
+      // (2) 自機の当たり判定(カメラ位置)に接触しても獲得(取得範囲を広く)
+      if(it.position.distanceTo(camera.position)<14.0) got=true;
+      if(got){
+        const wasFull=(hp>=50);                          // 取る前から満タン=余剰→サイコミュ化
+        if(wasFull &amp;&amp; psyCount<PSY_MAX){
+          psyCount++;                                    // 余剰補給をPSYに変換
+          if(shBroken){ shBroken=false; } shHP=20;
+          healFx=1.2; healFull=true;
+          showFloatText('PSY +1',PAL.red);
+          // 明るいアラート音(上昇アルペジオ+きらめき)
+          beep(880,0.07,'square',0.09); beep(1175,0.07,'square',0.09,0.06);
+          beep(1568,0.08,'square',0.09,0.12); beep(2093,0.12,'square',0.09,0.18);
+          beep(2637,0.16,'sine',0.08,0.24); beep(3136,0.18,'sine',0.07,0.30);
+          explode(it.position.clone(),0.5,[PAL.red,PAL.white,PAL.magenta,PAL.red]);
+        }else if(wasFull){
+          showFloatText('PSY MAX',PAL.red);              // 既に上限3
+          explode(it.position.clone(),0.4,[PAL.red,PAL.white]);
+        }else{
+          hp=512;                                        // ★試験用: 満タン512(本番は50)
+          if(shBroken){ shBroken=false; } shHP=20;       // 盾も必ず全回復
+          healFx=1.2; healFull=true;
+          showFloatText('FULL RECOVERY',PAL.green);
+          beep(880,0.08,'square',0.08); beep(1320,0.1,'square',0.07,0.05); beep(1760,0.12,'square',0.06,0.1);
+          explode(it.position.clone(),0.5,[PAL.green,PAL.white,0x66ff99,PAL.green]);
+        }
+        updateHUD(); u.dead=true;
+      }
+      if(it.position.z>30)u.dead=true;                   // 通り過ぎたら消える
+    }
+    healBoxes=healBoxes.filter(it=>{ if(it.userData.dead)freeGroup(it); return !it.userData.dead; });
+    // ウェーブ制(2D版踏襲): 敵を全滅させると次の波が一気に湧く
+    if(enemies.length===0 &amp;&amp; pendingSpawns.length===0 &amp;&amp; !psyActive()){
+      waveClearT+=dt;
+      if(waveClearT>1.0){ startWave(); waveClearT=0; psyWaveClear=false; }
+    }
+    // 予約スポーンを時間差で出す(2D版の setTimeout 相当)。PSY発動中は湧かせない(取り残し防止)
+    if(!psyActive()) for(let i=pendingSpawns.length-1;i>=0;i--){
+      pendingSpawns[i].t-=dt;
+      if(pendingSpawns[i].t<=0){
+        if(enemies.length>=18){ pendingSpawns[i].t=0.25; continue; }   // 同時敵数の上限(多すぎたら少し待つ=負荷制限)
+        const kind=pendingSpawns[i].kind;
+        if(kind==='ms')spawnGrunt(pendingSpawns[i].heavy); else if(kind==='ftr')spawnFighter(); else if(kind==='nem')spawnNemesis(); else if(kind==='shp')spawnShip(pendingSpawns[i].ox,pendingSpawns[i].oy);
+        pendingSpawns.splice(i,1);
+      }
+    }
+    // 敵更新(ヒットストップ中は敵の動きを止める=相打ちフリーズ)
+    for(const e of enemies){
+      const u=e.userData;
+      if(psyActive() &amp;&amp; u.state!=='dying') continue;     // 発動中: 生存敵は停止、死亡中(dying)は爆発アニメ続行
+      // 再出現の一呼吸: 通過後はいったん退避して隠し、間をおいて照準正面へ再出現
+      if(u.waiting){
+        u.respawnT-=dt;
+        if(u.respawnT<=0){
+          const isNem=(u.kind==='nemesis');
+          if(u.kind==='fighter'){
+            const ang=Math.random()*6.28, rad=18+Math.random()*20;
+            e.position.set(selfX+Math.cos(ang)*rad, selfY+(Math.random()-0.5)*16, -130-Math.random()*40);
+            u.ox=selfX+(Math.random()-0.5)*60; u.oy=selfY+(Math.random()-0.5)*40;
+          }else{
+            const ang=Math.random()*6.28, rad=14+Math.random()*16;
+            e.position.set(selfX+Math.cos(ang)*rad, selfY+(Math.random()-0.5)*16, -120-Math.random()*40);
+            u.ox=selfX+(Math.random()-0.5)*(isNem?80:64); u.oy=selfY+(Math.random()-0.5)*(isNem?50:40);
+          }
+          u.state='approach'; u.waiting=false; e.visible=true;
+        }
+        continue;
+      }
+      // 相打ちはじかれ中の敵: フリーズ中でも剣だけ逆再生で弾き返す
+      if(u.clashBounce){
+        u.clashBounce.t+=dt;
+        const bp=Math.min(1,u.clashBounce.t/0.6);
+        const P2=u.P;
+        const right=(u.mside>0);
+        const arm=right?P2.armR:P2.armL;
+        // 振り下ろし途中から振りかぶりへ逆再生(弾き返されて巻き戻る)+震え
+        const sh=Math.sin(u.clashBounce.t*45)*Math.exp(-u.clashBounce.t*4)*0.3;
+        if(arm){ arm.rotation.x=-2.6+(2.3)*bp+sh; arm.rotation.z=sh; }  // 切り下ろし位置→振りかぶりへ戻る
+        if(P2.torso){ P2.torso.rotation.x=-bp*0.2+sh*0.5; P2.torso.rotation.z=(right?1:-1)*bp*0.15; }
+        const gl=2.5+Math.abs(sh)*5;
+        if(P2.saber&amp;&amp;P2.saber.children[1])P2.saber.children[1].material.emissiveIntensity=gl;
+        if(P2.saberL&amp;&amp;P2.saberL.children[1])P2.saberL.children[1].material.emissiveIntensity=gl;
+        if(u.clashBounce.t>0.6){ u.clashBounce=null; }
+        continue;                                  // はじかれ中は他の動きをしない
+      }
+      if(hitstopT>0 &amp;&amp; u.state!=='dying'){ continue; }   // フリーズ中は動かさない(爆発以外)
+      u.t+=dt; u.stateT+=dt;
+      if(u.guardCdActive){ u.guardCdT-=dt; if(u.guardCdT<=0)u.guardCdActive=false; }  // 敵ガードの再受付待ち
+      const P=u.P;
+      if(u.state==='approach'){
+        if(u._origEmis)setDuelTint(e,false);         // チャンバラ終了→赤みを解除
+        if(u.kind==='fighter'){
+          // 戦闘機: 2D版移植。奥から手前へ速く突っ込み、自機を通り過ぎて背後へ抜ける
+          u.t2=(u.t2||0)+dt*60;
+          // 個体ごとに違う軌道パラメータ(狙い点のズレ・揺れ幅)を一度だけ設定
+          if(u.flyOffX===undefined){ u.flyOffX=(Math.random()-0.5)*54; u.flyOffY=(Math.random()-0.5)*32; u.flyAmp=3+Math.random()*9; }
+          // 速めに前進(手前=+zへ)
+          e.position.z+=u.speed*1.0*dt;
+          // 大きめの横揺れ(個体ごとに振幅が違う)
+          const swayX=Math.sin(u.t2/26+u.phase)*u.flyAmp;
+          const swayY=Math.cos(u.t2/32+u.phase)*u.flyAmp*0.5;
+          // 自機方向へ寄るが、個体ごとにズレた狙い点へ向かう(軌道がばらける)
+          u.ox+=(selfX-u.ox)*0.015; u.oy+=(selfY-u.oy)*0.015;
+          e.position.x+=((u.ox+u.flyOffX+swayX)-e.position.x)*0.04;
+          e.position.y+=((u.oy+u.flyOffY+swayY)-e.position.y)*0.04;
+          e.position.y=Math.max(selfY-20,Math.min(selfY+22,e.position.y));
+          // 機体を進行方向(手前=カメラ)へ向け、揺れでバンク
+          e.rotation.set(0, Math.atan2(camera.position.x-e.position.x, camera.position.z-e.position.z), 0);
+          if(P.body){ P.body.rotation.z=-Math.cos(u.t2/26+u.phase)*0.5; P.body.rotation.x=0.1; }
+          // 通り過ぎたら奥へ湧き直す(自機の現在位置を基準に=見失わない)
+          // チャンバラ中は飛行機が突っ込んでこないよう、自機付近に来たら早めにリセット再出現
+          const duelOn=enemies.some(o=>o.userData.state==='melee'||o.userData.state==='charging');
+          if(e.position.z>30 || (duelOn &amp;&amp; e.position.z>-10)){
+            u.waiting=true; u.respawnT=0.4+Math.random()*0.5; e.visible=false; e.position.z=-600;  // 一呼吸おいて再出現
+          }
+          // 機首発射(自機側にいる時)
+          const dCam=e.position.distanceTo(camera.position);
+          u.fireT-=dt;
+          if(u.fireT<=0 &amp;&amp; e.position.z<10 &amp;&amp; dCam<120){ enemyFire(e); u.fireT=(1.0+Math.random()*1.4)/diffFire(); }
+        }else{
+          // GRUNT/NEMESIS(人型): 2D版移植。奥から手前へ通り過ぎる(原点に集まらない)
+          const isNem=(u.kind==='nemesis');
+          const sm=u.spdMul||1;                          // 個体の速度倍率(茶色ヘビー=0.66)
+          const spdK=(isNem?1.7:1.0)*sm;
+          u.t2=(u.t2||0)+dt*60*spdK;
+          // === 前後: 奥(-z)から手前(+z)へ進み、自機を通り過ぎて背後へ抜ける ===
+          // (4) 前後の緩急ブースト
+          if((u.zT-=dt*60*spdK)<=0){
+            u.zv=Math.random()<0.7?7:-5;                 // 70%加速で迫る/30%減速
+            u.zT=(isNem?40:90)+Math.random()*(isNem?60:130);
+          }
+          if(u.zv){ u.zv*=0.9; if(Math.abs(u.zv)<0.15)u.zv=0; }
+          // NEMESISは手前で粘る(間合いを保ちビーム戦)、GRUNTはそのまま通過
+          let fwdSpd=(u.speed*(isNem?0.6:0.9)+ (u.zv||0)*1.2)*sm;
+          if(isNem &amp;&amp; e.position.z>-30 &amp;&amp; e.position.z<20) fwdSpd*=0.25; // 近距離で減速し粘る
+          e.position.z+=fwdSpd*dt;
+          // === 横/縦: 自機正面の定位置へ寄りつつ、ゆらぎ・ダッシュ・回避で散る(2D版の緩急) ===
+          // (2) sin/cosゆらぎ
+          const wAmp=(isNem?0.8:0.6)*sm;
+          e.position.x+=Math.sin(u.t2/40+u.phase)*wAmp;
+          e.position.y+=Math.cos(u.t2/55+u.phase)*wAmp*0.6;
+          // (3) 定位置(ox,oy)へ寄る(中央に固まらない)。定位置自体も自機を追うので見失わない
+          u.ox+=(selfX-u.ox)*0.01; u.oy+=(selfY-u.oy)*0.01;   // 定位置がゆっくり自機へ追従
+          e.position.x+=(u.ox-e.position.x)*(isNem?0.02:0.018)*sm;
+          e.position.y+=(u.oy-e.position.y)*(isNem?0.02:0.018)*sm;
+          // (5) ランダム方向への大ダッシュ→減速(2D版: 勢いよく跳んでスッと止まる)
+          if((u.bigT-=dt*60*spdK)<=0){
+            const a=Math.random()*6.28;
+            u.bvx=Math.cos(a)*(isNem?6:4.5); u.bvy=Math.sin(a)*(isNem?4.5:3.5);
+            u.bigT=(isNem?70:140)+Math.random()*(isNem?100:180);
+          }
+          if(u.bvx||u.bvy){
+            e.position.x+=u.bvx*0.2; e.position.y+=u.bvy*0.2;
+            u.bvx*=0.88; u.bvy*=0.88; if(Math.abs(u.bvx)<0.1)u.bvx=0; if(Math.abs(u.bvy)<0.1)u.bvy=0;
+          }
+          // (6) 瞬間回避ステップ(2D版: 1機分パッと避ける)
+          if((u.dodge-=dt*60*spdK)<=0){
+            const dd=[[2.2,0],[-2.2,0],[0,1.8],[0,-1.8]][Math.floor(Math.random()*4)];
+            const k=isNem?1.5:1;
+            e.position.x+=dd[0]*k; e.position.y+=dd[1]*k;
+            u.dodge=(isNem?45:90)+Math.random()*(isNem?70:160);
+          }
+          // (7) 団子防止
+          for(const o of enemies){
+            if(o===e||o.userData.kind==='fighter')continue;
+            const dx=e.position.x-o.position.x, dy=e.position.y-o.position.y, dz=e.position.z-o.position.z;
+            const d2=dx*dx+dy*dy+dz*dz;
+            if(d2<64&amp;&amp;d2>0.01){const dl=Math.sqrt(d2); e.position.x+=dx/dl*0.4; e.position.y+=dy/dl*0.4;}
+          }
+          // 画面内に収める帯。軽いはみ出しは即収めるが、大きく振り切られたら(逃げられた)
+          // 即引き戻さず一呼吸おいて正面に再出現させる(戦闘機と同じリズム=逃げる猶予が生まれる)
+          // 引き戻しクランプは廃止。逃げたら実際に画面外(9割方)まで出してから消す=画面を狭く感じさせない。
+          { const sp=enemyScreenPos(e);
+            const offscreen = (sp.z>1) || (Math.abs(sp.x)>1.18) || (Math.abs(sp.y)>1.18);  // 中心が枠外=9割方出た
+            u.fleeT = offscreen ? (u.fleeT||0)+dt : 0;
+            if(u.fleeT > 0.15){          // チラつき除外のため少し継続を要求
+              u.fleeT=0;
+              let wc=0; for(const o of enemies){ if(o.userData.waiting &amp;&amp; o.userData.kind!=='fighter') wc++; }
+              u.waiting=true; u.respawnT=0.6+Math.random()*1.8 + wc*0.6; e.visible=false; e.position.z=-600;  // 逃げ:0.6〜2.4秒+待機数ぶんずらす
+            } }
+          // === チャンバラ突入(2D版z<110相当: 近づいたら剣を構えて突進) ===
+          // 自機正面にある程度近づき、他にチャンバラ中の敵がいなければ突入
+          if(e.position.z>-30 &amp;&amp; !duelBusy(e)){
+            if(isNem &amp;&amp; Math.random()>=1/3){
+              // NEMESISは2/3で離脱してビーム戦(奥へ戻る)
+              e.position.z=-90-Math.random()*40;
+            }else{
+              u.state='charging'; u.mside=(Math.random()<0.5?-1:1); u.chargeT=0;
+              beep(220,0.05,'square',0.08); beep(330,0.05,'square',0.08,0.05); beep(660,0.1,'square',0.08,0.1);
+            }
+          }
+          // すり抜け防止(MS): チャンバラに入れない時は手前の中距離で粘る(至近だと端でチラつくので-22)
+          if(e.position.z>-22){ e.position.z=-22; }
+          // === 通り過ぎたら奥へ湧き直す(自機の現在位置を基準に=見失わない) ===
+          if(e.position.z>30){
+            u.waiting=true; u.respawnT=0.6+Math.random()*1.8; e.visible=false; e.position.z=-600;  // 通過後も0.6〜2.4秒おいて再出現
+          }
+
+          // 機体姿勢: 進行方向(手前=カメラ方向)を向く
+          e.rotation.set(0, Math.atan2(camera.position.x-e.position.x, camera.position.z-e.position.z), 0);  // Y回転のみ直接計算(表裏・逆さま完全防止)
+          const legSpd=isNem?9:5;
+          if(P.torso){P.torso.rotation.x=isNem?0.45:0.4; P.torso.rotation.z=Math.sin(u.t2/40+u.phase)*(isNem?0.25:0.08);}
+          if(P.hipL)P.hipL.rotation.x=Math.sin(u.t*legSpd)*0.5-0.2;
+          if(P.hipR)P.hipR.rotation.x=-Math.sin(u.t*legSpd)*0.5-0.2;
+          if(P.armR)P.armR.rotation.x=-0.2;
+          if(P.armL)P.armL.rotation.x=0;
+          if(P.head){P.head.rotation.x=0; P.head.rotation.z=0; P.head.rotation.y=Math.sin(u.t*(isNem?3:1.5))*0.2;}
+          // ライフル発射(前方=自機側にいる時だけ)
+          const dCam=e.position.distanceTo(camera.position);
+          u.fireT-=dt;
+          if(u.fireT<=0 &amp;&amp; e.position.z<10 &amp;&amp; dCam<120){ enemyFire(e); u.fireT=(isNem?(0.5+Math.random()*0.6):(1.6+Math.random()*2))/diffFire(); }
+        }
+      }else if(u.state==='charging'){
+        // 居合・突進(2D版): 剣を抜かず自機正面へ突進。x/y自機追従、z前進。近接で抜刀
+        setDuelTint(e,true);                         // チャンバラ中は赤みを帯びる
+        const follow=(u.kind==='nemesis')?0.08:0.045;
+        e.position.x+=(selfX-e.position.x)*follow;
+        e.position.y+=(selfY-e.position.y)*follow;
+        e.position.z+=42*dt;                          // 素早く突進してすぐ抜刀
+        e.rotation.set(0, Math.atan2(camera.position.x-e.position.x, camera.position.z-e.position.z), 0);  // Y回転のみ直接計算(表裏・逆さま完全防止)
+        if(P.torso)P.torso.rotation.x=0.6;            // 前傾突進
+        if(P.saber)P.saber.visible=false;
+        if(P.rifle)P.rifle.visible=true;
+        if(P.hipL)P.hipL.rotation.x=Math.sin(u.t*12)*0.6-0.3;
+        if(P.hipR)P.hipR.rotation.x=-Math.sin(u.t*12)*0.6-0.3;
+        // 対峙で抜刀=melee開始(居合)。シールド中は盾より奥(-16)で止まる
+        const duelZ=(shieldOn&amp;&amp;!shBroken)?-16:DUEL_Z;
+        if(e.position.z>=duelZ){
+          e.position.z=duelZ;                        // 目の前(盾中は盾の手前)に固定
+          u.state='melee'; u.melee=(u.kind==='nemesis')?14:(u.heavy?36:18); u.mlen=u.melee; u.parried=false; u.meleeHitDone=false;
+          beep(1568,0.03,'square',0.1); beep(2093,0.05,'square',0.1,0.03);  // シャキーン(抜刀)
+        }
+        // 画面外へ振り切られたら離脱。遠くへ戻して自然に再接近(目の前への瞬間移動はしない=チラつき防止)
+        const epc=enemyScreenPos(e);
+        if(Math.abs(epc.x)>1.3||Math.abs(epc.y)>1.3){
+          u.state='approach';
+          e.position.set(selfX+(Math.random()-0.5)*60, selfY+(Math.random()-0.5)*36, -120-Math.random()*30);
+          if(Math.random()<0.2)showFloatText('ESCAPED!',PAL.cyan);
+        }
+      }else if(u.state==='melee'){
+        // 斬撃(2D版): 抜いた刀で振る。x/y自機追従、zは固定(目の前に張り付く)
+        setDuelTint(e,true);                         // チャンバラ中は赤みを帯びる
+        // チャンバラ中も損傷していれば煙(目の前なのでよく見える)
+        if(u.maxHp &amp;&amp; u.hp>0 &amp;&amp; u.hp<=u.maxHp*0.5){
+          u.smokeT2=(u.smokeT2||0)-dt;
+          if(u.smokeT2<=0){ emitSmoke(new THREE.Vector3(e.position.x,e.position.y+1.5,e.position.z)); u.smokeT2=(u.hp<=u.maxHp*0.2?0.06:0.1); }
+        }
+        const follow=(u.kind==='nemesis')?0.08:0.045;
+        e.position.x+=(selfX-e.position.x)*follow;
+        e.position.y+=(selfY-e.position.y)*follow;
+        const duelZm=(shieldOn&amp;&amp;!shBroken)?-16:DUEL_Z;
+        e.position.z+=(duelZm-e.position.z)*0.2;      // 盾中は奥で留まる/解除で目の前へ詰める
+        e.rotation.set(0, Math.atan2(camera.position.x-e.position.x, camera.position.z-e.position.z), 0);  // Y回転のみ直接計算(表裏・逆さま完全防止)
+        // 画面外へ振り切られたら離脱(2D版: 大きく動いてかわす)
+        const epm=enemyScreenPos(e);
+        if(Math.abs(epm.x)>1.35||Math.abs(epm.y)>1.35){
+          u.state='approach'; u.melee=0; u.combo=0;
+          if(P.saber)P.saber.visible=false; if(P.saberL)P.saberL.visible=false; if(P.rifle)P.rifle.visible=true;
+          u.waiting=true; u.respawnT=0.6+Math.random()*1.8; e.visible=false; e.position.z=-600;  // 逃げ切られたら1.0〜3.0秒おいて再出現
+          if(Math.random()<0.2)showFloatText('ESCAPED!',PAL.cyan);
+        }
+        // 斬撃モーション: mside で左右の剣を振り分け、振りかぶって振り下ろす(モーションリグ準拠)
+        const right=(u.mside>0);
+        // 振る側の剣を表示、逆側は隠す
+        if(P.saber)P.saber.visible=right;
+        if(P.saberL)P.saberL.visible=!right;
+        if(P.rifle)P.rifle.visible=false;
+        const arm=right?P.armR:P.armL;
+        const other=right?P.armL:P.armR;
+        const sgn=right?1:-1;
+        const lc=(1-(u.melee/u.mlen))*1.2;            // ローカル時間 0→1.2
+        if(arm){
+          if(lc<0.5){
+            // 高く振りかぶる(前方上空へ)
+            const k=lc/0.5;
+            arm.rotation.x=-0.3-k*2.5; arm.rotation.z=sgn*0.15*(1-k);
+            if(P.torso){P.torso.rotation.x=-k*0.25; P.torso.rotation.z=sgn*k*0.15;}
+          }else if(lc<0.78){
+            // 垂直に切り下ろす(前方下へ一気に)
+            const k=(lc-0.5)/0.28;
+            arm.rotation.x=-2.8+k*3.4; arm.rotation.z=0;
+            if(P.torso){P.torso.rotation.x=-0.25+k*0.55; P.torso.rotation.z=sgn*(0.15-k*0.15);}
+          }else{
+            // 戻し
+            const k=(lc-0.78)/0.42;
+            arm.rotation.x=0.6-k*0.9; arm.rotation.z=0;
+            if(P.torso){P.torso.rotation.x=0.3-k*0.3; P.torso.rotation.z=0;}
+          }
+        }
+        if(other){ other.rotation.x=-0.25; other.rotation.z=-sgn*0.25; }  // 逆手は添える
+        if(P.head)P.head.rotation.x=lc<0.5?-0.2:0.15;
+        const glow=1.6+Math.abs(Math.sin(lc*5))*1.4;
+        if(P.saber&amp;&amp;P.saber.children[1])P.saber.children[1].material.emissiveIntensity=glow;
+        if(P.saberL&amp;&amp;P.saberL.children[1])P.saberL.children[1].material.emissiveIntensity=glow;
+        u.melee-=dt*60;
+        // 振り終わり際(2D版 melee===2)に斬撃ヒット。剣で受けていなければ被弾
+        if(u.melee<=2 &amp;&amp; !u.meleeHitDone &amp;&amp; !u.parried){
+          u.meleeHitDone=true; meleeHitPlayer(e);
+        }
+        if(u.melee<=0){
+          // ヘビーは次の振りまで間を置く(頻度1/2)。それ以外は即座に逆刀で連撃(2D版)
+          if(u.heavy &amp;&amp; !u.swungGap){ u.swungGap=true; u.gapT=18; }
+          if(u.swungGap){
+            u.gapT-=dt*60;
+            if(u.gapT>0){ u.melee=0.001; }              // 待機中は新しい振りを始めない
+            else u.swungGap=false;
+          }
+          if(!u.swungGap){
+            u.parried=false; u.meleeHitDone=false; u.combo=(u.combo||0)+1;
+            u.mside=(Math.random()<0.5?-1:1);
+            u.melee=(u.kind==='nemesis')?14:(u.heavy?36:18); u.mlen=u.melee;
+            beep(u.mside<0?1568:2093,0.03,'square',0.08);   // 抜き直し(逆刀)
+          }
+        }
+      }else if(u.state==='ship'){
+        // 戦艦: 剣の届く距離までゆっくりだが着実に迫る。緩く視点追尾。3方向同時発射
+        e.position.z+=4.0*dt;                                    // 着実に前進(ゆっくりだが近づく)
+        if(e.position.z>-25)e.position.z=-25;                   // 目の前まで迫って止まる(迫力)
+        e.position.x+=Math.sin(u.t/2+u.phase)*0.04;             // ゆっくり左右に揺れ
+        e.position.x+=((selfX+(u.offX||0))-e.position.x)*0.005; // 緩く視点追尾(艦ごとに横位置をずらす)
+        e.position.y+=((selfY-2+(u.offY||0))-e.position.y)*0.005;
+        e.rotation.set(0, Math.atan2(camera.position.x-e.position.x, camera.position.z-e.position.z)*0.3, 0);
+        if(P.coreGlow)P.coreGlow.material.emissiveIntensity=0.7+Math.abs(Math.sin(u.t*3))*0.6;
+        u.fireT-=dt;
+        if(u.fireT<=0 &amp;&amp; e.position.z>-120){
+          for(let k=0;k<3;k++)shipFire(e);
+          u.fireT=(2.0+Math.random()*1.5)/diffFire();
+          if(P.turrets)P.turrets.forEach(t=>t.children.forEach(c=>{if(c.material)c.material.emissiveIntensity=2;}));
+        }
+      }else if(u.state==='retreat'){
+        const away=e.position.clone().sub(new THREE.Vector3(0,0,0)).normalize();
+        e.position.addScaledVector(away,u.speed*0.8*dt);
+        if(e.position.distanceTo(camera.position)>60)u.state='approach';
+      }else if(u.state==='dying'){
+        if(!u.exploded){
+          if(u.kind==='fighter'){
+            // 戦闘機: 振動しながら傾いて落ちる
+            const tr=Math.sin(u.stateT*42)*Math.min(1,u.stateT*3);
+            if(P.body){P.body.rotation.z=tr*0.5+u.stateT*1.5; P.body.rotation.x=u.stateT*0.5;}
+            e.position.y-=u.stateT*8*dt;
+            if(P.nose)P.nose.material.emissiveIntensity=Math.abs(tr)*2;
+          }else if(u.kind==='ship'){
+            // 戦艦: 各所で連鎖爆発しながら崩れる
+            if(P.coreGlow)P.coreGlow.material.emissiveIntensity=Math.max(0,2-u.stateT*4);
+            if(Math.random()<0.4){
+              const px=e.position.clone(); px.x+=(Math.random()-0.5)*28; px.y+=(Math.random()-0.5)*5;
+              explode(px,1.2);
+            }
+          }else{
+            // GRUNT: くの字に崩れる
+            if(P.torso)P.torso.rotation.x=0.7;
+            if(P.head)P.head.rotation.x=0.5;
+            if(P.hipL)P.hipL.rotation.x=-1.0;
+            if(P.hipR)P.hipR.rotation.x=-1.0;
+            if(P.eye)P.eye.material.emissiveIntensity=Math.max(0,0.9-u.stateT*3);
+          }
+          if(u.stateT>(u.kind==='ship'?0.8:0.3)){
+            const exScale=(u.kind==='nemesis')?e.scale.x*3.4:(u.kind==='ship')?e.scale.x*7:e.scale.x*2.0;
+            explode(e.position.clone(),exScale);
+            u.exploded=true;
+            freeGroup(e);
+          }
+        }
+      }
+      // 被弾HITエフェクト: 移動は続けたまま、姿勢によろめきを重ねる(止まらない=狙われない)
+      if(u.hitT>0 &amp;&amp; u.state!=='dying'){
+        u.hitT+=dt;
+        const st=u.hitT;
+        const damp=Math.exp(-st*5.0);
+        const lean=u.hitLean||1;
+        if(u.kind==='fighter'){
+          const tr=Math.sin(st*40)*damp;
+          if(P.body){P.body.rotation.z+=tr*0.3+lean*0.15*damp;}
+          if(P.nose)P.nose.material.emissiveIntensity=Math.abs(tr)*2;
+        }else{
+          const isNem=(u.kind==='nemesis');
+          const sh=Math.sin(st*(isNem?36:26))*damp;
+          // torsoにだけ小さなよろめきを足す(頭はtorsoの子なので一緒に動く。頭は直接触らない)
+          if(P.torso){P.torso.rotation.z+=lean*(isNem?0.1:0.18)*damp+sh*0.08;}
+          if(P.eye)P.eye.material.emissiveIntensity=0.5+Math.abs(sh)*2;
+        }
+        const recover=(u.kind==='nemesis')?0.18:0.4;
+        if(st>recover){ u.hitT=0; u.hitLean=0; }
+      }
+      // スラスター明滅(人型)
+      if(P.thrL)P.thrL.material.emissiveIntensity=0.6+Math.abs(Math.sin(u.t*8))*0.5;
+      if(P.thrR)P.thrR.material.emissiveIntensity=0.6+Math.abs(Math.sin(u.t*8+1))*0.5;
+      if(P.eye&amp;&amp;u.state!=='dying'&amp;&amp;!(u.hitT>0))P.eye.material.emissiveIntensity=0.6+Math.abs(Math.sin(u.t*3))*0.6;
+      // 戦闘機: ライト明滅・スラスター
+      if(P.lights&amp;&amp;u.state!=='dying'&amp;&amp;!(u.hitT>0))P.lights.forEach((l,i)=>{l.material.emissiveIntensity=0.5+Math.abs(Math.sin(u.t*6+i*1.3))*0.9;});
+      if(P.thrusters)P.thrusters.forEach((th,i)=>{th.material.emissiveIntensity=0.6+Math.abs(Math.sin(u.t*10+i))*0.6;});
+      // 損傷した機体から白い煙。HP50%以下で濃く煙を出す(どれが傷ついているか分かる)
+      // HPは再出現でもリセットされないので損傷状態は引き継がれる
+      if(u.state!=='dying' &amp;&amp; u.maxHp &amp;&amp; u.hp>0 &amp;&amp; u.hp<=u.maxHp*0.5){
+        const ratio=u.hp/u.maxHp;
+        u.smokeT=(u.smokeT||0)-dt;
+        const interval=ratio<=0.2?0.06:0.1;        // 50%以下で濃く、瀕死で一層濃く
+        if(u.smokeT<=0){
+          if(u.kind==='ship'){
+            // 戦艦は横長なので艦体の左右に広く煙を散らす
+            const sp=e.position.clone(); sp.x+=(Math.random()-0.5)*16; sp.y+=1+Math.random()*2;
+            emitSmoke(sp);
+          }else{
+            emitSmoke(e.position);
+          }
+          u.smokeT=interval+Math.random()*interval*0.4;
+        }
+      }
+      // 安全ガード: dying以外は本体のピッチ(X)・ロール(Z)を常にゼロに(足から・宙返り防止)
+      if(u.state!=='dying'){ e.rotation.x=0; e.rotation.z=0; }
+    }
+    // 死んだ敵を除去
+    enemies=enemies.filter(e=>!(e.userData.state==='dying'&amp;&amp;e.userData.exploded));
+
+    // 自機ビーム更新(命中は発射時のヒットスキャンで判定済み。弾は演出として飛ぶ)
+    for(const b of beams){
+      b.mesh.position.addScaledVector(b.dir,160*dt);
+      b.life-=dt;
+      if(b.life<=0)freeMesh(b.mesh);
+    }
+    beams=beams.filter(b=>b.life>0);
+
+    // 敵弾更新+被弾判定(自機の実位置で判定=動いて避けられる)
+    const selfPos=new THREE.Vector3(selfX,selfY,0);
+    for(const s of eshots){
+      s.mesh.position.addScaledVector(s.dir,s.speed*dt);
+      if(s.spin){s.mesh.rotation.x+=s.spin*dt;s.mesh.rotation.y+=s.spin*0.7*dt;}
+      s.life-=dt;
+      const sp=s.mesh.position;
+      // 自弾(飛行中のビーム)で敵弾を撃ち落とす
+      let shotDown=false;
+      for(const b of beams){
+        if(b.mesh.position.distanceTo(sp)<2.6){
+          s.life=0; explode(sp.clone(),0.3,[0xffffff,0xffff00,0xffe000,0xffffff]); score+=10;
+          beep(1760,0.03,'square',0.06); beep(2349,0.04,'square',0.05,0.03);
+          freeMesh(s.mesh); shotDown=true; break;
+        }
+      }
+      if(shotDown)continue;
+      // 剣を振っている間: 振った側に来た弾だけ斬り落とす(左右きっちり分ける)
+      if(playerSaber &amp;&amp; sp.z>-14){
+        const rel=sp.x-selfX;                       // 自機から見た弾の左右(>0=右, <0=左)
+        // 左剣(dir<0)は自機より左側の弾だけ、右剣(dir>0)は右側の弾だけ防げる
+        const sideOk = playerSaber.dir<0 ? rel<0 : rel>0;
+        if(sideOk){
+          const dy=sp.y-selfY;
+          if(Math.abs(rel)<16 &amp;&amp; Math.abs(dy)<14 &amp;&amp; Math.abs(sp.z)<12){
+            s.life=0; explode(sp.clone(),0.35); score+=10;
+            beep(1568,0.03,'square',0.06); beep(2093,0.04,'square',0.05,0.03);
+            freeMesh(s.mesh); continue;
+          }
+        }
+      }
+      // シールド中: 正面の近い弾を防ぐ
+      if(shieldOn &amp;&amp; !shBroken &amp;&amp; sp.z>-10){
+        const dx=sp.x-selfX, dy=sp.y-selfY;
+        if(Math.hypot(dx,dy)<10 &amp;&amp; Math.abs(sp.z)<10){
+          // 爆発は盾の表面(z=-7.5)に出す。盾より手前(カメラ側)に出さない
+          const fxPos=sp.clone(); fxPos.z=Math.min(fxPos.z,-7.5);
+          s.life=0; explode(fxPos,0.25);
+          shHP--; shHitFx=1.0; beep(880,0.05,'square',0.06); beep(1320,0.04,'square',0.04,0.02);
+          if(shHP<=0){ shHP=0; shBroken=true; shieldOn=false; showFloatText('SHIELD BREAK!',PAL.red); beep(200,0.3,'sawtooth',0.12); noise(0.3,0.18,0,1200); }
+          updateHUD();
+          freeMesh(s.mesh); continue;
+        }
+      }
+      // 自機の現在位置に当たったか(判定を小さく=ギリギリ回避の醍醐味)。チャンバラ中は敵弾無効
+      const inDuel = enemies.some(o=>o.userData.state==='melee'||o.userData.state==='charging');
+      if(!inDuel &amp;&amp; !psyActive() &amp;&amp; sp.distanceTo(selfPos)<1.7){
+        s.life=0;
+        hp-=1; dmgFlash=1.5; shake=8; updateHUD();   // 被弾は激しい揺れ+画面淵の赤ライトのみ(火花なし)
+        sndSelfLight();                            // 浅い被弾: 小爆発音(剣・敵弾共通)
+        vibrate(35);                               // スマホ振動(浅い被弾)
+        if(hp<=0){ gameOver(); }
+      }
+      // 自機の後方へ通り過ぎたら外れ(避け成功)
+      if(sp.z>6) s.life=0;
+      if(s.life<=0)freeMesh(s.mesh);
+    }
+    eshots=eshots.filter(s=>s.life>0);
+  }
+
+  // ロックオン表示(照準に敵が重なっているか)
+  let lock=false;
+  for(const e of enemies){
+    if(e.userData.state==='dying')continue;
+    const ep=enemyScreenPos(e); if(ep.z>1)continue;
+    const distToCam=e.position.distanceTo(camera.position);
+    const r=Math.max(0.08,3.5/distToCam);
+    if(Math.abs(ep.x)<r&amp;&amp;Math.abs(ep.y)<r){lock=true;break;}
+  }
+  document.getElementById('reticle').classList.toggle('lock',lock);
+  document.getElementById('rbox').classList.toggle('lock',lock);
+
+  // 剣の射程内(近づいた敵)にチャンバラ・ロックオンマーク(点滅カギ括弧)
+  updateSwordLocks();
+  // 画面外の敵の方向を矢印で示す(片寄り・離れすぎ対策)
+  updateEnemyArrows();
+
+  // ダメージフラッシュ(常に反映し、0で確実に消す)
+  dmgFlash=Math.max(0,dmgFlash-dt*2); document.getElementById('dmg').style.opacity=dmgFlash;
+  if(healFx>0){ healFx-=dt*2; const he=document.getElementById('healfx'); if(he)he.style.opacity=Math.max(0,healFx*(healFull?0.5:0.3)); }
+  // HP残りわずか(5以下)で警戒アラート: 高音ビープ(少ないほど速い)+赤枠点滅
+  const alertEl=document.getElementById('lowhp');
+  if(playing&amp;&amp;hp<=10&amp;&amp;hp>0){
+    lowHpAlertT+=dt;
+    const iv=hp<=2?0.33:hp<=4?0.5:hp<=6?0.7:0.95;       // 残りが少ないほど速い間隔(秒)
+    if(lowHpAlertT>=iv){ lowHpAlertT=0; beep(1760,0.045,'square',0.07); beep(1760,0.045,'square',0.06,0.08); }
+    if(alertEl)alertEl.style.opacity=0.25+Math.abs(Math.sin(now*0.008))*0.4;  // 赤枠が脈打つ
+  }else if(alertEl){ alertEl.style.opacity=0; }
+  document.getElementById('clashfx').style.opacity=Math.max(0,clashFx);
+
+  updateFX(dt);
+  renderer.render(scene,camera);
+}
+loop();
+// 画面を3:2固定アスペクト比に。画面に収まる最大の3:2矩形を中央配置、周りは黒帯
+const ASPECT=3/2;
+let gameW=innerWidth, gameH=innerHeight, gameL=0, gameT=0;
+function layout(){
+  let w=innerWidth, h=innerHeight;
+  if(w/h>ASPECT){ gameH=h; gameW=Math.round(h*ASPECT); } // 横長すぎ→高さ基準、左右に黒帯
+  else { gameW=w; gameH=Math.round(w/ASPECT); }          // 縦長すぎ→幅基準、上下に黒帯
+  gameL=Math.round((w-gameW)/2);
+  // 縦持ち(下に黒帯が大きい)時はゲーム画面を上寄せにして、下の黒帯を操作スペースにする
+  const portrait=(h-gameH)>120;
+  gameT=portrait?Math.min(40,Math.round((h-gameH)*0.15)):Math.round((h-gameH)/2);
+  renderer.setSize(gameW,gameH);
+  camera.aspect=ASPECT; camera.updateProjectionMatrix();
+  const cv=renderer.domElement;
+  cv.style.position='absolute'; cv.style.left=gameL+'px'; cv.style.top=gameT+'px';
+  // HUD情報(スコア等)はゲーム領域に合わせる
+  const hud=document.querySelector('.hud');
+  if(hud){ hud.style.left=gameL+'px'; hud.style.top=gameT+'px'; hud.style.width=gameW+'px'; hud.style.height=gameH+'px'; }
+  // コントローラーは画面下端の黒帯にまとめて配置(指が画面にかからない)
+  const dpad=document.getElementById('dpad');
+  const firebtn=document.getElementById('firebtn');
+  const sbrL=document.getElementById('sbrLbtn');
+  const sbrR=document.getElementById('sbrRbtn');
+  const shld=document.getElementById('shldbtn');
+  const base= portrait ? Math.max(24, Math.round((h-gameT-gameH)*0.30)) : 36;
+  if(dpad){ dpad.style.bottom=base+'px'; dpad.style.left='28px'; }
+  // 右側ボタン群を十字配置:
+  //        [シールド]
+  //   [剣左][ライフル][剣右]
+  // 右側ボタン群を十字配置(中心基準で左右対称に。FIRE幅84/他62のサイズ差を考慮)
+  //        [SHLD]
+  //   [SBR L][FIRE][SBR R]
+  const FC=135;                                // FIREの中心(画面右端からの距離)
+  const SP=78;                                 // 中心間の間隔
+  const fHalf=42, aHalf=31;                    // FIRE半径/アクションボタン半径
+  if(firebtn){ firebtn.style.bottom=base+'px';        firebtn.style.right=(FC-fHalf)+'px'; }
+  if(sbrL){    sbrL.style.bottom=base+'px';            sbrL.style.right=(FC+SP-aHalf)+'px'; }   // FIREの左
+  if(sbrR){    sbrR.style.bottom=base+'px';            sbrR.style.right=(FC-SP-aHalf)+'px'; }   // FIREの右
+  if(shld){    shld.style.bottom=(base+86)+'px';       shld.style.right=(FC-aHalf)+'px'; }       // FIREの真上
+}
+addEventListener('resize',layout);
+layout();
+updateHUD();
+</script>
+</body>
+</html>
+"></iframe>
+</div>
+<script>
+function openGame(){
+  var ov=document.getElementById('gameOverlay');
+  ov.classList.add('on');
+  document.body.style.overflow='hidden';
+  var f=document.getElementById('gameFrame');
+  function go(){ try{ f.contentWindow.postMessage('autostart','*'); }catch(e){} }
+  go(); setTimeout(go,150); setTimeout(go,500);
+}
+function closeGame(){
+  var ov=document.getElementById('gameOverlay');
+  ov.classList.remove('on');
+  document.body.style.overflow='';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('a.startbtn').forEach(function(a){
+    a.setAttribute('href','javascript:void(0)');
+    a.addEventListener('click',function(e){e.preventDefault();openGame();});
+  });
+});
+</script>
+<script>
+(function(){
+if(!window.THREE){console.warn('THREE未ロード');return;}
+
+var PAL={white:0xf2f5ff,ltgray:0xb8c2d0,gray:0x6a7585,dark:0x2a3340,black:0x141a22,
+  cyan:0x34d0ff,yellow:0xffd60a,red:0xff2d55,green:0x22ee66,dgreen:0x0f9940,orange:0xff7a18,
+  purple:0xc061ff,magenta:0xff00cc,ltpink:0xff9ed6,dpink:0xff1a8c,dpurple:0x6a2a9a,
+  brown:0xb5731f,dbrown:0x6e4012};
+function mat(hex,emi){return new THREE.MeshStandardMaterial({color:hex,roughness:0.55,metalness:0.35,emissive:emi||0x000000,emissiveIntensity:emi?0.9:0});}
+function vox(g,x,y,z,w,h,d,hex,emi){var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(hex,emi));m.position.set(x,y,z);g.add(m);return m;}
+function grp(x,y,z){var o=new THREE.Group();o.position.set(x,y,z);return o;}
+
+function voxSym(group,x,y,z,w,h,d,hex,emi){
+  vox(group, x,y,z,w,h,d,hex,emi);
+  vox(group,-x,y,z,w,h,d,hex,emi);
+}
+function buildPlayer(){
+  const g=new THREE.Group();
+  // 胴(コア): シャープな逆台形
+  vox(g, 0, 1.2, 0, 4.2, 4.4, 3.2, PAL.white);
+  vox(g, 0, 3.4, 0, 3.4, 1.0, 2.8, PAL.ltgray);      // 胸の段
+  vox(g, 0,-1.4, 0, 2.6, 1.8, 2.2, PAL.gray);        // 腰
+  vox(g, 0, 1.4, 1.7, 1.4, 2.4, 0.5, PAL.cyan, PAL.cyan); // 胸ダクト(発光)
+  // 頭部: 細身、シャープなツインアイ(バイザー)
+  vox(g, 0, 4.7, 0.2, 2.0, 1.6, 2.0, PAL.white);
+  vox(g, 0, 5.6, 0.2, 1.0, 0.7, 1.0, PAL.ltgray);    // ブレード状アンテナ基部
+  vox(g, 0, 6.5, 0.2, 0.3, 1.4, 0.3, PAL.yellow, PAL.yellow); // V字アンテナ
+  vox(g, 0, 4.6, 1.25,1.7, 0.5, 0.3, PAL.cyan, PAL.cyan);     // バイザー(発光帯)
+  // 肩: 角張ったショルダーアーマー
+  voxSym(g, 3.2, 2.6, 0, 1.8, 2.0, 2.6, PAL.white);
+  voxSym(g, 3.9, 3.6, 0, 1.0, 0.8, 1.6, PAL.cyan, PAL.cyan);  // 肩アクセント発光
+  // 腕: 細め、前腕に向け絞る
+  voxSym(g, 3.3, 0.6, 0, 1.3, 2.6, 1.5, PAL.ltgray);
+  voxSym(g, 3.3,-1.6, 0, 1.5, 1.8, 1.7, PAL.white);          // 前腕(やや太)
+  voxSym(g, 3.3,-2.9, 0, 1.0, 1.0, 1.0, PAL.gray);           // 拳
+  // 脚: 長く伸びたシャープな脚部
+  voxSym(g, 1.3,-3.4, 0, 1.8, 2.4, 2.2, PAL.white);
+  voxSym(g, 1.3,-5.6, 0.1,1.5, 2.4, 1.8, PAL.ltgray);
+  voxSym(g, 1.3,-7.3, 0.6,1.7, 1.0, 2.8, PAL.gray);          // 足
+  voxSym(g, 1.3,-7.1, 1.9,1.3, 0.6, 0.6, PAL.yellow, PAL.yellow); // つま先ライト
+  // バックパック + スラスター
+  vox(g, 0, 2.4,-1.9, 2.6, 2.6, 1.0, PAL.gray);
+  voxSym(g, 1.0, 3.6,-2.4, 0.9, 1.4, 0.8, PAL.dark);
+  voxSym(g, 1.0, 2.2,-2.6, 0.7, 0.7, 0.5, PAL.cyan, PAL.cyan); // スラスター炎口
+  // ビームライフル(右手に保持)
+  const rifle=new THREE.Group();
+  vox(rifle, 3.3,-1.6, 2.6, 1.0, 1.0, 3.4, PAL.dark);
+  vox(rifle, 3.3,-1.6, 4.6, 0.5, 0.5, 1.2, PAL.cyan, PAL.cyan);
+  vox(rifle, 3.3,-2.4, 1.6, 0.8, 1.2, 0.8, PAL.gray);
+  g.add(rifle);
+  return g;
+}
+function buildGrunt(tone){
+  const C={main:(tone&&tone.main)||PAL.green, dark:(tone&&tone.dark)||PAL.dgreen};
+  const root=new THREE.Group();
+  const P={};
+  const torso=grp(0,0,0); root.add(torso); P.torso=torso;
+  vox(torso,0,1.0,0,4.6,4.2,3.6,C.main);
+  vox(torso,0,-1.6,0,3.0,2.0,2.6,C.dark);
+  vox(torso,0,1.2,1.9,2.0,1.6,0.5,PAL.dark);
+  vox(torso,0,2.2,-2.2,2.8,2.8,1.0,C.dark);
+  const thrL=vox(torso,0.9,2.0,-2.8,0.7,0.7,0.5,PAL.orange,PAL.orange); P.thrL=thrL;
+  const thrR=vox(torso,-0.9,2.0,-2.8,0.7,0.7,0.5,PAL.orange,PAL.orange); P.thrR=thrR;
+  const head=grp(0,3.4,0); torso.add(head); P.head=head;
+  vox(head,0,1.0,0,2.4,2.0,2.4,C.dark);
+  vox(head,0,1.0,1.3,2.6,0.7,0.4,PAL.black);
+  const eye=vox(head,0,1.0,1.55,0.7,0.7,0.3,PAL.red,PAL.red); P.eye=eye;
+  // 肩・腕(構え)
+  const shL=grp(3.4,2.4,0); torso.add(shL); P.shL=shL;
+  vox(shL,0.4,0,0,2.2,2.4,3.0,C.main);
+  const armL=grp(0.4,-1.2,0); shL.add(armL); P.armL=armL;
+  vox(armL,0,-1.4,0,1.8,3.0,2.0,C.main);
+  vox(armL,0,-3.6,0,1.4,1.4,1.4,C.dark);
+  // 左手のサーベル(二刀流。抜刀時に表示)
+  const handL=grp(0,-3.6,0.4); armL.add(handL); P.handL=handL;
+  const saberL=grp(0,0,0); handL.add(saberL); P.saberL=saberL;
+  vox(saberL,0,0,0.6,0.4,0.4,1.0,PAL.gray);            // 柄
+  vox(saberL,0,0,3.4,0.45,0.45,5.0,PAL.ltpink,PAL.ltpink); // 刃
+  saberL.visible=false;
+  const shR=grp(-3.4,2.4,0); torso.add(shR); P.shR=shR;
+  vox(shR,-0.4,0,0,2.2,2.4,3.0,C.main);
+  const armR=grp(-0.4,-1.2,0); shR.add(armR); P.armR=armR;
+  vox(armR,0,-1.4,0,1.8,3.0,2.0,C.main);
+  const hand=grp(0,-3.6,0.4); armR.add(hand); P.hand=hand;
+  const rifle=grp(0,0,0); hand.add(rifle); P.rifle=rifle;
+  vox(rifle,0,0,1.2,1.2,1.3,2.6,PAL.dark);
+  vox(rifle,0,0.1,3.2,0.7,0.7,2.4,PAL.gray);
+  const muzzle=vox(rifle,0,0.1,5.4,0.7,0.7,0.6,PAL.red,PAL.red); P.muzzle=muzzle;
+  vox(rifle,0,-1.0,0.6,0.7,1.6,0.9,PAL.dark);
+  // サーベル(抜刀時に表示。薄ピンクの刃)
+  const saber=grp(0,0,0); hand.add(saber); P.saber=saber;
+  vox(saber,0,0,0.6,0.4,0.4,1.0,PAL.gray);            // 柄
+  vox(saber,0,0,3.4,0.45,0.45,5.0,PAL.ltpink,PAL.ltpink); // 刃
+  saber.visible=false;
+  // 脚
+  const hipL=grp(1.4,-2.6,0); torso.add(hipL); P.hipL=hipL;
+  vox(hipL,0,-1.2,0,2.2,2.6,2.6,C.main);
+  vox(hipL,0,-3.6,0.2,1.9,2.4,2.2,C.dark);
+  vox(hipL,0,-5.0,0.7,2.0,1.0,3.0,PAL.dark);
+  const hipR=grp(-1.4,-2.6,0); torso.add(hipR); P.hipR=hipR;
+  vox(hipR,0,-1.2,0,2.2,2.6,2.6,C.main);
+  vox(hipR,0,-3.6,0.2,1.9,2.4,2.2,C.dark);
+  vox(hipR,0,-5.0,0.7,2.0,1.0,3.0,PAL.dark);
+  // === 茶色ヘビー: 肩・胴に重装甲ブロック追加 + 脚を太く(もっさり重量級) ===
+  if(tone&&tone.heavy){
+    // 胸部の追加装甲(分厚い前面ブロック)
+    vox(torso,0,1.2,1.6,5.4,3.2,1.4,C.dark);
+    vox(torso,0,1.2,2.3,3.0,2.0,0.6,C.main);
+    // 肩の大型パッド(もっさり張り出す)
+    vox(shL,1.2,1.0,0,2.4,2.2,3.8,C.dark);
+    vox(shL,1.6,1.4,0,1.0,1.2,3.2,C.main);
+    vox(shR,-1.2,1.0,0,2.4,2.2,3.8,C.dark);
+    vox(shR,-1.6,1.4,0,1.0,1.2,3.2,C.main);
+    // 腰回りの装甲スカート
+    vox(torso,0,-2.8,0,4.4,1.6,3.4,C.dark);
+    // 太もも・脛を太く(重い脚)
+    vox(hipL,0,-1.2,0,3.0,2.8,3.2,C.main);
+    vox(hipL,0,-3.6,0.2,2.7,2.6,2.8,C.dark);
+    vox(hipR,0,-1.2,0,3.0,2.8,3.2,C.main);
+    vox(hipR,0,-3.6,0.2,2.7,2.6,2.8,C.dark);
+    // 足先も大きく
+    vox(hipL,0,-5.0,0.9,2.8,1.3,3.8,PAL.dark);
+    vox(hipR,0,-5.0,0.9,2.8,1.3,3.8,PAL.dark);
+  }
+  root.userData.P=P;
+  root.scale.setScalar(0.5);                    // ゲーム内サイズ
+  return root;
+}
+function buildFighter(){
+  const root=new THREE.Group();
+  const P={lights:[],thrusters:[]};
+  const g=grp(0,0,0); root.add(g); P.body=g;
+  // 機首
+  vox(g,0,0,3.8,2.4,1.8,3.0,PAL.cyan);
+  const nose=vox(g,0,0,5.6,1.0,1.0,1.4,PAL.white,PAL.cyan); P.lights.push(nose); P.nose=nose;
+  // コックピット
+  vox(g,0,0.6,1.2,3.4,2.6,3.4,PAL.ltgray);
+  const canopy=vox(g,0,1.2,2.8,2.2,1.2,1.0,PAL.cyan,PAL.cyan); P.lights.push(canopy);
+  // 本体
+  vox(g,0,0,-0.6,4.4,2.8,3.2,PAL.white);
+  vox(g,0,-0.3,-2.6,3.2,2.0,2.2,PAL.gray);
+  // 主翼
+  vox(g,4.0,0,-0.6,4.4,1.0,2.8,PAL.white); vox(g,-4.0,0,-0.6,4.4,1.0,2.8,PAL.white);
+  const wtL=vox(g,6.6,0,-1.2,1.8,0.8,1.8,PAL.cyan,PAL.cyan); P.lights.push(wtL);
+  const wtR=vox(g,-6.6,0,-1.2,1.8,0.8,1.8,PAL.cyan,PAL.cyan); P.lights.push(wtR);
+  vox(g,5.8,0.8,-1.4,0.5,1.8,1.2,PAL.ltgray); vox(g,-5.8,0.8,-1.4,0.5,1.8,1.2,PAL.ltgray);
+  // 下面
+  vox(g,0,-1.6,0.4,3.0,1.2,2.4,PAL.gray);
+  // 尾翼
+  vox(g,0,1.8,-3.0,0.5,2.6,1.4,PAL.white);
+  vox(g,1.6,1.2,-3.0,0.4,1.8,1.2,PAL.ltgray); vox(g,-1.6,1.2,-3.0,0.4,1.8,1.2,PAL.ltgray);
+  // スラスター(2基)
+  const thL=vox(g,1.4,-0.2,-3.6,1.2,1.2,0.7,PAL.orange,PAL.orange); P.thrusters.push(thL);
+  const thR=vox(g,-1.4,-0.2,-3.6,1.2,1.2,0.7,PAL.orange,PAL.orange); P.thrusters.push(thR);
+  // 機首にビーム発射口(muzzle代わり)
+  P.muzzle=nose;
+  root.userData.P=P;
+  root.userData.kind='fighter';
+  root.scale.setScalar(0.42);                   // ゲーム内サイズ(やや小型)
+  return root;
+}
+function buildNemesis(){
+  const root=new THREE.Group();
+  const P={};
+  const torso=grp(0,0,0); root.add(torso); P.torso=torso;
+  vox(torso,0,1.2,0,4.0,4.6,3.0,PAL.purple);
+  vox(torso,0,3.6,0,3.0,1.2,2.6,PAL.white);
+  vox(torso,0,-1.6,0,2.6,2.0,2.0,0x5a1a88);
+  vox(torso,0,1.4,1.7,1.2,2.6,0.5,PAL.magenta,PAL.magenta);
+  vox(torso,0,2.6,-2.0,2.4,3.0,1.2,0x5a1a88);
+  const thrL=vox(torso,1.2,2.0,-2.9,0.8,0.8,0.6,PAL.magenta,PAL.magenta); P.thrL=thrL;
+  const thrR=vox(torso,-1.2,2.0,-2.9,0.8,0.8,0.6,PAL.magenta,PAL.magenta); P.thrR=thrR;
+  // 頭(単眼+ツノ)
+  const head=grp(0,3.6,0); torso.add(head); P.head=head;
+  vox(head,0,1.2,0.1,2.0,1.8,2.0,PAL.purple);
+  vox(head,0,1.1,1.25,1.8,0.6,0.3,PAL.black);
+  const eye=vox(head,0,1.1,1.5,0.9,0.5,0.3,PAL.cyan,PAL.cyan); P.eye=eye;
+  vox(head,0,2.8,0.8,0.3,2.2,0.3,PAL.yellow,PAL.yellow);  // ツノ
+  vox(head,0,2.1,0.5,0.5,1.2,0.5,PAL.white);
+  // 肩(スパイク)+腕
+  const shL=grp(3.3,2.8,0); torso.add(shL); P.shL=shL;
+  vox(shL,0,0,0,1.6,2.2,2.8,PAL.purple);
+  vox(shL,0.9,0.6,0,0.6,0.6,2.0,PAL.white);
+  vox(shL,0.6,1.0,0,0.9,0.7,1.4,PAL.magenta,PAL.magenta);
+  const armL=grp(0,-1.4,0); shL.add(armL); P.armL=armL;
+  vox(armL,0,-1.2,0,1.3,2.8,1.5,0x5a1a88);
+  vox(armL,0,-3.0,0,1.0,1.0,1.0,PAL.white);
+  // 左手のサーベル(二刀流)
+  const handL=grp(0,-3.0,0.3); armL.add(handL); P.handL=handL;
+  const saberL=grp(0,0,0); handL.add(saberL); P.saberL=saberL;
+  vox(saberL,0,0,0.6,0.4,0.4,1.0,PAL.gray);
+  vox(saberL,0,0,3.4,0.45,0.45,5.2,PAL.ltpink,PAL.ltpink);
+  saberL.visible=false;
+  const shR=grp(-3.3,2.8,0); torso.add(shR); P.shR=shR;
+  vox(shR,0,0,0,1.6,2.2,2.8,PAL.purple);
+  vox(shR,-0.9,0.6,0,0.6,0.6,2.0,PAL.white);
+  vox(shR,-0.6,1.0,0,0.9,0.7,1.4,PAL.magenta,PAL.magenta);
+  const armR=grp(0,-1.4,0); shR.add(armR); P.armR=armR;
+  vox(armR,0,-1.2,0,1.3,2.8,1.5,0x5a1a88);
+  vox(armR,0,-3.0,0,1.0,1.0,1.0,PAL.white);
+  const hand=grp(0,-3.0,0.3); armR.add(hand); P.hand=hand;
+  const rifle=grp(0,0,0); hand.add(rifle); P.rifle=rifle;
+  vox(rifle,0,0,1.2,1.1,1.2,2.6,PAL.black);
+  vox(rifle,0,0.1,3.2,0.6,0.6,2.6,0x5a1a88);
+  const muzzle=vox(rifle,0,0.1,5.6,0.7,0.7,0.6,PAL.magenta,PAL.magenta); P.muzzle=muzzle;
+  vox(rifle,0,-1.0,0.6,0.6,1.4,0.8,PAL.black);
+  // サーベル(抜刀時に表示)
+  const saber=grp(0,0,0); hand.add(saber); P.saber=saber;
+  vox(saber,0,0,0.6,0.4,0.4,1.0,PAL.gray);
+  vox(saber,0,0,3.4,0.45,0.45,5.2,PAL.ltpink,PAL.ltpink);
+  saber.visible=false;
+  // 脚
+  const hipL=grp(1.3,-2.6,0); torso.add(hipL); P.hipL=hipL;
+  vox(hipL,0,-1.0,0,1.7,2.6,2.2,PAL.purple);
+  vox(hipL,0,-3.3,0.1,1.4,2.6,1.8,0x5a1a88);
+  vox(hipL,0,-5.0,0.6,1.6,1.0,2.9,PAL.black);
+  const hipR=grp(-1.3,-2.6,0); torso.add(hipR); P.hipR=hipR;
+  vox(hipR,0,-1.0,0,1.7,2.6,2.2,PAL.purple);
+  vox(hipR,0,-3.3,0.1,1.4,2.6,1.8,0x5a1a88);
+  vox(hipR,0,-5.0,0.6,1.6,1.0,2.9,PAL.black);
+  root.userData.P=P;
+  root.userData.kind='nemesis';
+  root.scale.setScalar(0.52);                   // GRUNTより一回り大きい
+  return root;
+}
+function buildShip(cside){
+  const g=grp(0,0,0);
+  const P={};
+  // 巨大な艦体(横長) — 紫系グラデーション
+  vox(g,0,0,0,16,4,6,PAL.purple);
+  vox(g,0,2.4,0,12,1.2,5,PAL.magenta);              // 上甲板(明るいマゼンタ)
+  vox(g,0,-2.4,0,12,1.2,4,PAL.dpurple);             // 艦底(暗い紫)
+  // 艦橋(後方)
+  vox(g,0,3.6,-1.5,3,3,2.5,PAL.purple);
+  vox(g,0,5.2,-1.5,1.5,1,1.5,PAL.cyan,PAL.cyan);    // 艦橋ライト(シアン)
+  // 前方の砲塔列
+  for(const sx of [-5,-2.5,0,2.5,5]){
+    vox(g,sx,2.0,3.0,1.4,1.0,1.4,PAL.dpurple);
+    vox(g,sx,2.0,3.9,0.5,0.5,1.2,PAL.magenta);       // 砲身(マゼンタ)
+  }
+  // 側面のスラスター列(黄の発光ライト・左右対称)
+  for(const sx of [-6,-3,0,3,6]){
+    vox(g,sx,-1.0,-3.2,0.8,0.8,0.5,PAL.yellow,PAL.yellow);
+  }
+  // 装甲ブロック(左右対称)
+  vox(g,7.5,0,1.5,1.5,2.5,3,PAL.dpurple);  vox(g,-7.5,0,1.5,1.5,2.5,3,PAL.dpurple);
+  vox(g,7.5,0,-1.5,1.5,2.5,2.5,PAL.purple); vox(g,-7.5,0,-1.5,1.5,2.5,2.5,PAL.purple);
+  // 弱点コア: 位置で左/中央/右(cside=-1/0/1)。脈動発光(赤)
+  const cx=(cside<0)?-5:(cside>0?5:0);
+  vox(g,cx,0,3.2,2.4,2.4,1.0,PAL.black);            // コアの窪み(枠)
+  const core=grp(cx,0,3.7); g.add(core); P.core=core;
+  const coreGlow=vox(core,0,0,0,1.4,1.4,0.6,PAL.red,PAL.red); P.coreGlow=coreGlow;
+  // コア周囲のリング(黄)
+  vox(g,cx,1.4,3.5,2.0,0.3,0.4,PAL.yellow,PAL.yellow);
+  vox(g,cx,-1.4,3.5,2.0,0.3,0.4,PAL.yellow,PAL.yellow);
+  // 砲塔(発射演出用に参照)
+  P.turrets=[];
+  for(const sx of [-5,0,5]){ const t=grp(sx,2.0,3.5); P.turrets.push(t); }
+  g.userData.P=P;
+  g.userData.kind='ship';
+  g.userData.cside=cside;
+  g.scale.setScalar(1.0);
+  return g;
+}
+function buildPsyUnit(){
+  const root=new THREE.Group();
+  const P={};
+  const g=grp(0,0,0); root.add(g); P.body=g;
+  // 本体(白い細長い菱形ボディ)
+  vox(g,0,0,0,2.2,1.4,4.2,PAL.white,0x222244);
+  vox(g,0,0,2.6,1.4,1.0,2.0,PAL.ltgray);            // 前部
+  vox(g,0,0,-2.4,1.6,1.1,1.6,PAL.gray);             // 後部スラスター
+  // 左右のスタビライザー(羽)
+  vox(g,1.7,0,-0.4,1.2,0.4,2.4,PAL.ltgray);
+  vox(g,-1.7,0,-0.4,1.2,0.4,2.4,PAL.ltgray);
+  // 発射口(先端で光る・シアン/黄)
+  const muzzle=vox(g,0,0,3.8,0.9,0.9,0.7,PAL.yellow,PAL.yellow); P.muzzle=muzzle;
+  // 中央のサイコミュ・コア(マゼンタ点滅)
+  const core=vox(g,0,0.5,-0.2,0.7,0.7,0.7,PAL.magenta,PAL.magenta); P.core=core;
+  root.userData.P=P;
+  root.scale.setScalar(0.85);
+  return root;
+}
+
+var GLR=null;
+function getGLR(){ if(!GLR){ GLR=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true}); } return GLR; }
+
+// モデルを枠にフィットさせ、指定アングルで1回だけ静止描画して2D canvasに転写
+function renderModel(canvas, model, opts){
+  opts=opts||{};
+  var dpr=Math.max(2, Math.min(window.devicePixelRatio||1, 3));
+  var w=Math.max(220, Math.round(canvas.clientWidth*dpr)), h=Math.max(220, Math.round(canvas.clientHeight*dpr));
+  canvas.width=w; canvas.height=h;
+  var glr=getGLR(); glr.setSize(w,h,false); glr.setClearColor(0x000000,0);
+  var scene=new THREE.Scene();
+  scene.add(new THREE.AmbientLight(0xffffff,0.85));
+  var d1=new THREE.DirectionalLight(0xffffff,0.95); d1.position.set(4,8,6); scene.add(d1);
+  var d2=new THREE.DirectionalLight(0x88bbff,0.35); d2.position.set(-6,2,-4); scene.add(d2);
+  // モデルの向き(回転)
+  var pivot=new THREE.Group();
+  if(opts.modelRotY) model.rotation.y=opts.modelRotY;
+  pivot.add(model); scene.add(pivot);
+  // バウンディングボックスで中心・サイズを取得しフレーミング
+  var box=new THREE.Box3().setFromObject(model);
+  var c=box.getCenter(new THREE.Vector3()), sz=box.getSize(new THREE.Vector3());
+  pivot.position.sub(c);                        // 原点に中心合わせ
+  var radius=Math.max(sz.x,sz.y,sz.z)*0.5 || 1;
+  var cam=new THREE.PerspectiveCamera(opts.fov||30, w/h, 0.1, 2000);
+  var az=(opts.az!=null?opts.az:0.6), el=(opts.el!=null?opts.el:0.35);   // 方位角・仰角(rad)
+  var dist=radius/Math.tan((cam.fov*Math.PI/180)/2)*(opts.zoom||1.5);
+  cam.position.set(Math.sin(az)*Math.cos(el)*dist, Math.sin(el)*dist, Math.cos(az)*Math.cos(el)*dist);
+  cam.lookAt(0,0,0);
+  glr.render(scene,cam);
+  var ctx=canvas.getContext('2d'); ctx.clearRect(0,0,w,h); ctx.drawImage(glr.domElement,0,0,w,h);
+  // 後片付け(共有GLRは保持)
+  scene.traverse(function(o){ if(o.isMesh){ if(o.geometry)o.geometry.dispose(); if(o.material)o.material.dispose(); } });
+}
+
+// 自機+PSY2機(前から見た戦闘配置)を1シーンで描画
+function renderPsyFormation(canvas, opts){
+  opts=opts||{};
+  var dpr=Math.min(window.devicePixelRatio||1,2);
+  var w=Math.max(8,Math.round(canvas.clientWidth*dpr)), h=Math.max(8,Math.round(canvas.clientHeight*dpr));
+  canvas.width=w; canvas.height=h;
+  var glr=getGLR(); glr.setSize(w,h,false); glr.setClearColor(0x000000,0);
+  var scene=new THREE.Scene();
+  scene.add(new THREE.AmbientLight(0xffffff,0.85));
+  var d1=new THREE.DirectionalLight(0xffffff,0.95); d1.position.set(3,8,7); scene.add(d1);
+  var d2=new THREE.DirectionalLight(0x88bbff,0.4); d2.position.set(-6,2,2); scene.add(d2);
+  var root=new THREE.Group(); scene.add(root);
+  // PSYユニット2基(自機なし)。実機(発動時)と同じく機体を斜めに振り、斜め上前から3面が見える立体表示
+  var pL=buildPsyUnit(); pL.position.set(-7,0,0); pL.rotation.y=2.5; root.add(pL);
+  var pR=buildPsyUnit(); pR.position.set( 7,0,0); pR.rotation.y=2.5; root.add(pR);
+  var box=new THREE.Box3().setFromObject(root);
+  var c=box.getCenter(new THREE.Vector3()), sz=box.getSize(new THREE.Vector3());
+  root.position.sub(c);
+  var radius=Math.max(sz.x,sz.y,sz.z)*0.5||1;
+  var cam=new THREE.PerspectiveCamera(30, w/h, 0.1, 3000);
+  var az=0.6, el=0.5;
+  var dist=radius/Math.tan((cam.fov*Math.PI/180)/2)*1.15;
+  cam.position.set(Math.sin(az)*Math.cos(el)*dist, Math.sin(el)*dist, Math.cos(az)*Math.cos(el)*dist);
+  cam.lookAt(0,0,0);
+  glr.render(scene,cam);
+  var ctx=canvas.getContext('2d'); ctx.clearRect(0,0,w,h); ctx.drawImage(glr.domElement,0,0,w,h);
+  scene.traverse(function(o){ if(o.isMesh){ if(o.geometry)o.geometry.dispose(); if(o.material)o.material.dispose(); } });
+}
+
+
+function modelFor(kind){
+  if(kind==='grunt')return buildGrunt();
+  if(kind==='heavy')return buildGrunt({main:PAL.brown,dark:PAL.dbrown,heavy:true});
+  if(kind==='fighter')return buildFighter();
+  if(kind==='nemesis')return buildNemesis();
+  if(kind==='ship')return buildShip();
+  if(kind==='self')return buildPlayer();
+  if(kind==='psy')return buildPsyUnit();
+  return buildGrunt();
+}
+
+function renderAll(){
+  try{
+    // 自機(タイトル): 斜め前
+    // 自機画像は表示しない(デザインは想像にまかせる)
+    // 敵カード: 斜め上
+    var foes=document.querySelectorAll('canvas.vox-foe');
+    foes.forEach(function(cv){
+      var kind=cv.getAttribute('data-model');
+      renderModel(cv, modelFor(kind), {az:0.6, el:0.55, zoom:1.12, fov:30});
+    });
+    // PSY: 各canvasに1基ずつ、敵カードと同じ立体描画
+    var psys=document.querySelectorAll('canvas.vox-psy');
+    psys.forEach(function(cv){ renderModel(cv, buildPsyUnit(), {az:0.6, el:0.5, zoom:1.15, fov:30}); });
+  }catch(e){ console.warn('voxel描画エラー',e); }
+}
+
+function boot(){ renderAll(); }
+if(document.readyState==='complete'||document.readyState==='interactive') setTimeout(boot,60);
+else document.addEventListener('DOMContentLoaded',boot);
+var rt=null;
+window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(renderAll,250); });
+})();
+
+</script>
+</body>
+</html>
