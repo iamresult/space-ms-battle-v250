@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6NLQCERB9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y6NLQCERB9', {'page_title': 'ゲーム開始'});
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>SPACE MS BATTLE 3D Ver.2.0</title>
@@ -1403,8 +1412,8 @@ function resetGame(){
   smokePuffs.forEach(sm=>freeMesh(sm.mesh)); smokePuffs=[];
   fireballs.forEach(f=>freeMesh(f.mesh)); fireballs=[];
   for(const pl of LIGHT_POOL) pl.intensity=0;
-  hp=512; score=0; wave=0; killCount=0;     // ★試験用HP512(本番は50)
-  psyCount=3; psyChargeT=0; psyMode=0; psyWaveClear=false; fireHeld=false; psyFired=false; psyCleaned=false;  // ★試験用PSY3(本番は0)
+  hp=50; score=0; wave=0; killCount=0;
+  psyCount=0; psyChargeT=0; psyMode=0; psyWaveClear=false; fireHeld=false; psyFired=false; psyCleaned=false;
   { const ph0=document.getElementById('psyhud'); if(ph0)ph0.classList.remove('charging'); }
   psyUnits.forEach(u=>freeGroup(u)); psyUnits=[];
   psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
@@ -1654,6 +1663,15 @@ addEventListener('message',function(ev){
     if(t && !t.classList.contains('hidden')) startGame();   // タイトル表示中のみ(RETRYには干渉しない)
   }
 });
+// 埋め込み(iframe)時はタイトル画面のチラ見えを防ぐ: 最初からタイトルを隠して黒画面で待機し、autostartで開始
+(function(){
+  try{
+    if(window.self!==window.top){
+      var t=document.getElementById('title');
+      if(t) t.classList.add('hidden');
+    }
+  }catch(e){}
+})();
 document.getElementById('retrybtn').addEventListener('click',()=>{ if(performance.now()<overLockT)return; if(nmPendingList)return; startGame(); });   // 名前確定(OK)前はリトライ無効
 // 名前入力: ▲▼タップで文字選択、桁タップで選択桁移動、OKで確定
 document.getElementById('namechars').addEventListener('click',e=>{
@@ -2043,7 +2061,7 @@ function loop(){
           showFloatText('PSY MAX',PAL.red);              // 既に上限3
           explode(it.position.clone(),0.4,[PAL.red,PAL.white]);
         }else{
-          hp=512;                                        // ★試験用: 満タン512(本番は50)
+          hp=50;                                         // 満タンでなければ回復
           if(shBroken){ shBroken=false; } shHP=20;       // 盾も必ず全回復
           healFx=1.2; healFull=true;
           showFloatText('FULL RECOVERY',PAL.green);
