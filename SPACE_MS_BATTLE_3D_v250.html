@@ -1392,6 +1392,7 @@ let recoil=0, shake=0, dmgFlash=0;
 let lowHpAlertT=0;   // HP残りわずかアラートのタイマー
 let overLockT=0;     // ゲームオーバー直後の誤入力ロック(連打で名前確定されるのを防ぐ)
 let psyFired=false, psyCleaned=false, psyCleanT=0;   // PSY: ビーム発射済み / 全命中後の一掃済み / 一掃時刻
+let psyArmed=true;   // PSY安全装置: 一度両サーベルを離すまで次のチャージ不可
 let playerSaber=null, shieldOn=false;        // 自機の剣振り中(アニメ用)/シールド中
 let swingCdL=0, swingCdR=0;                  // 左右それぞれの連打クールダウン(独立=左右交互も速い)
 let selfStaggerT=0;                          // 自機よろけ(敵に斬りを受けられた=連打が中断される)
@@ -1425,7 +1426,7 @@ function resetGame(){
   fireballs.forEach(f=>freeMesh(f.mesh)); fireballs=[];
   for(const pl of LIGHT_POOL) pl.intensity=0;
   hp=50; score=0; wave=0; killCount=0;
-  psyCount=0; psyChargeT=0; psyMode=0; psyWaveClear=false; fireHeld=false; psyFired=false; psyCleaned=false;
+  psyCount=0; psyChargeT=0; psyMode=0; psyWaveClear=false; fireHeld=false; psyFired=false; psyCleaned=false; psyArmed=true;
   { const ph0=document.getElementById('psyhud'); if(ph0)ph0.classList.remove('charging'); }
   psyUnits.forEach(u=>freeGroup(u)); psyUnits=[];
   psyBeams.forEach(b=>{if(b.mesh)freeGroup(b.mesh);}); psyBeams=[];
@@ -1602,7 +1603,10 @@ addEventListener('keyup',e=>{
 function clearFireState(){ keys['x']=false; fireHeld=false; saberHeldL=false; saberHeldR=false; keys['sbrL']=false; keys['sbrR']=false; if(psyMode<=0)psyChargeT=0;
   const ph=document.getElementById('psyhud'); if(ph)ph.classList.remove('charging'); }
 addEventListener('blur', clearFireState);
-document.addEventListener('visibilitychange', ()=>{ if(document.hidden)clearFireState(); });
+addEventListener('focus', clearFireState);
+addEventListener('pagehide', clearFireState);
+addEventListener('pageshow', clearFireState);
+document.addEventListener('visibilitychange', ()=>{ clearFireState(); });
 // タッチ/マウス(画面ボタン)
 // クリックでビーム(ドラッグと区別: 短いタップ/クリック)
 let downT=0,downX=0,downY=0;
@@ -1829,8 +1833,10 @@ function psyActive(){ return psyMode>0; }   // 発動中=無敵・敵停止
 function updatePsy(dt){
   const ph=document.getElementById('psyhud');
   if(psyMode<=0){
-    // 長押し計測(発動前)
-    if(saberHeldL && saberHeldR && psyCount>0){
+    // 安全装置: 両サーベルを離したら再アーム(押しっぱなし連鎖・キー取りこぼし暴発を防ぐ)
+    if(!saberHeldL && !saberHeldR) psyArmed=true;
+    // 長押し計測(発動前)。psyArmed(一度離した)でなければチャージ不可
+    if(saberHeldL && saberHeldR && psyCount>0 && psyArmed){
       psyChargeT+=dt;
       if(ph)ph.classList.add('charging');
       // 0.7秒以上長押しでエネルギーが高まる音(チャージが進むほど高く・速く)
@@ -1845,7 +1851,7 @@ function updatePsy(dt){
         }
       }
       if(psyChargeT>=2.0){                          // 左右サーベル2秒同時押しで発動(PC/スマホ共通)
-        psyMode=0.0001; psyChargeT=0; psyHumT=0;       // 長押し完了で確定フェーズ突入
+        psyMode=0.0001; psyChargeT=0; psyHumT=0; psyArmed=false;   // 確定フェーズ突入。次は一度離すまで不可
         psyFired=false; psyCleaned=false;              // 発射・一掃フラグ初期化
         if(ph)ph.classList.remove('charging');
         eshots.forEach(s=>freeMesh(s.mesh)); eshots=[]; // 敵弾すべて撤去
