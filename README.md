@@ -1,10 +1,10 @@
-# SPACE MS BATTLE 3D — Ver.2.5.1
+# SPACE MS BATTLE 3D — Ver.2.5.2
 
 ブラウザでそのまま遊べる3DボクセルFPS。ダウンロード不要・無料・スマホ対応。
 
 ## 構成ファイル
 - `index.html` … ブリーフィングサイト（トップページ）。ゲームを内蔵し、START MISSION で起動。
-- `SPACE_MS_BATTLE_3D_v251.html` … ゲーム単体（直接開いても遊べる）。
+- `SPACE_MS_BATTLE_3D_v252.html` … ゲーム単体（直接開いても遊べる）。
 - `.nojekyll` … GitHub Pages の Jekyll 処理を無効化（静的HTMLをそのまま配信）。
 
 ## GitHub Pages での公開手順
